@@ -3,6 +3,7 @@ package com.brennaswitzer.cookbook.repositories;
 import com.brennaswitzer.cookbook.domain.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
@@ -12,7 +13,9 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     @Query("from Ingredient\n" +
             "where lower(name) like %:lcSubstr%\n" +
             "order by lower(name)\n" +
-            "    , id")
-    Iterable<Ingredient> findByNameContainsIgnoreCaseOrderByNameIgnoreCaseAscIdAsc(String lcSubstr);
+            "       , id")
+    Iterable<Ingredient> findByNameContainsIgnoreCaseOrderByNameIgnoreCaseAscIdAsc(
+            @Param("lcSubstr") String lcSubstr
+    );
 
 }
