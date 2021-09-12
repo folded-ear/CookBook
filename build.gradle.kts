@@ -5,6 +5,7 @@
 plugins {
     java
     `maven-publish`
+    antlr
 }
 
 repositories {
@@ -44,6 +45,8 @@ dependencies {
     annotationProcessor("org.hibernate:hibernate-jpamodelgen:5.3.10.Final")
 
     annotationProcessor("javax.xml.bind:jaxb-api:2.3.1")
+
+    antlr("org.antlr:antlr4:4.7.2")
 }
 
 group = "com.brennaswitzer"
@@ -59,4 +62,8 @@ publishing {
 
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
+}
+
+tasks.withType<AntlrTask>() {
+    arguments = arguments + listOf("-visitor", "-no-listener", "-long-messages")
 }
