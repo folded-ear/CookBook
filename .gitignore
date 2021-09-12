@@ -45,3 +45,4 @@ HELP.md
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 /public_html/
+/.gradle/

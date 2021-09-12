@@ -8,10 +8,8 @@ I'm a cookbook! I'm a todo list! I'm a meal planning package! I'm awesome!
 
 ## Build and Test
 
-You'll need a recent-ish Maven and Node/NPM pair to build. Specific versions
-may be stipulated at some point, but let's just say at least Maven 3 and
-Node 10. Shut up about "old Node"; Maven 3 is the same age as _Node itself_,
-so Node 10 is pretty damn new. Take your ADHD pills and we'll keep going.
+You'll need a recent-ish Gradle and Node/NPM pair to build. Specific versions
+may be stipulated at some point, but let's just say Gradle 7 and Node 10.
 
 The easiest way is to install `nvm` (see https://github.com/nvm-sh/nvm ) and
 use the included `mvnw` script:
@@ -21,9 +19,9 @@ use the included `mvnw` script:
     npm install
     npm run build
     cd ..
-    ./mvnw package
+    ./gradlew build
 
-Now you'll have a nice self-running JAR file in the `target` directory. Which
+Now you'll have a nice self-running JAR file in the `build/libs` directory. Which
 we'll immediately forget about, because it's for deployment, not development.
 
 ## Run (For Development)
@@ -44,7 +42,7 @@ To run the app, you'll need two terminals, one for the server:
     RDS_DB_NAME=postgres \
     RDS_USERNAME=postgres \
     RDS_PASSWORD=postgres \
-    ./mvnw spring-boot:run
+    ./gradlew bootRun
 
 and one for the client:
 
@@ -56,7 +54,7 @@ but if not, hit that link manually. BAM.
 
 ## Run (For Production)
 
-That self-running JAR from the build and test section is perfect. Except you
+That self-running JAR from the Build and Test section is perfect. Except you
 also need Google Auth secrets, DNS configuration, the right hostnames, the
 `package.json` config, and a bunch of mess. All of which is normal "host this
 thing" boilerplate and has nothing to do with Foodinger. So figure it out. :)
