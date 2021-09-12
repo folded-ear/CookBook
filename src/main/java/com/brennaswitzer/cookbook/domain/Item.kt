@@ -1,4 +1,4 @@
-package com.brennaswitzer.cookbook.domain;
+package com.brennaswitzer.cookbook.domain
 
 /**
  * Describes a single, atomic unit for a recipe, which could be
@@ -7,30 +7,29 @@ package com.brennaswitzer.cookbook.domain;
  * about it's amount, unit, ingredient reference and also "other things
  * a cook might need to know" - quanitified reference to an ingredient
  */
-public interface Item {
-
+interface Item {
     /**
      * Original raw string entered by input
      * @return raw string
      */
-    String getRaw();
+    val raw: String?
 
     /**
      * Amount and unit pair that describes the "how much"
      * @return amount/unit pair
      */
-    Quantity getQuantity();
+    val quantity: Quantity?
 
     /**
      * The rest of the info needed to prep a plan item
      * @return instructions on prep
      */
-    String getPreparation();
+    val preparation: String?
 
     /**
      * Reference to an ingredient, in this case most likely
      * a pantry item.
      * @return an ingredient
      */
-    Ingredient getIngredient();
+    val ingredient: Ingredient?
 }

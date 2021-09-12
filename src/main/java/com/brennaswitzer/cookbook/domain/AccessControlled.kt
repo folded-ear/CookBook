@@ -1,29 +1,23 @@
-package com.brennaswitzer.cookbook.domain;
+package com.brennaswitzer.cookbook.domain
 
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException
 
-public interface AccessControlled extends Owned {
+interface AccessControlled : Owned {
+    val acl: Acl?
+    override var owner: User?
+        get() = acl!!.getOwner()
+        set(owner) {
+            acl!!.setOwner(owner)
+        }
 
-    Acl getAcl();
-
-    default User getOwner() {
-        return getAcl().getOwner();
+    fun isPermitted(user: User?, level: AccessLevel?): Boolean {
+        val acl = acl ?: return false
+        return acl.isPermitted(user!!, level)
     }
 
-    default void setOwner(User owner) {
-        getAcl().setOwner(owner);
-    }
-
-    default boolean isPermitted(User user, AccessLevel level) {
-        Acl acl = getAcl();
-        if (acl == null) return false;
-        return acl.isPermitted(user, level);
-    }
-
-    default void ensurePermitted(User user, AccessLevel level) {
-        if (! isPermitted(user, level)) {
-            throw new AccessDeniedException("Unauthorized");
+    fun ensurePermitted(user: User?, level: AccessLevel?) {
+        if (!isPermitted(user, level)) {
+            throw AccessDeniedException("Unauthorized")
         }
     }
-
 }

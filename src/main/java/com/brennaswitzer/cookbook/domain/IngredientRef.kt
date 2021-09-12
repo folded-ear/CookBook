@@ -7,15 +7,18 @@ import javax.persistence.*
 // it's @Embeddable, and IntelliJ's too dumb
 class IngredientRef : MutableItem {
     @Column(name = "_order")
-    private var _idx = 0
-    private var raw: String? = null
+    var _idx = 0
+    override var raw: String? = null
+        get() = field ?: toString()
 
     @Embedded
-    private var quantity: Quantity? = null
-    private var preparation: String? = null
+    override var quantity: Quantity? = null
+        get() = field ?: Quantity.ONE
+
+    override var preparation: String? = null
 
     @ManyToOne(targetEntity = Ingredient::class, cascade = [CascadeType.MERGE])
-    private var ingredient: Ingredient? = null
+    override var ingredient: Ingredient? = null
 
     constructor() {}
     constructor(ingredient: Ingredient) : this(null, ingredient, null) {}
@@ -24,25 +27,17 @@ class IngredientRef : MutableItem {
         ingredient: Ingredient,
         preparation: String?
     ) {
-        setQuantity(quantity!!)
-        setIngredient(ingredient)
-        setPreparation(preparation!!)
+        this.quantity = quantity
+        this.ingredient = ingredient
+        this.preparation = preparation
     }
 
     constructor(raw: String?) {
-        setRaw(raw)
+        this.raw = raw
     }
 
     fun hasIngredient(): Boolean {
         return ingredient != null
-    }
-
-    override fun getRaw(): String {
-        return if (raw == null) toString() else raw!!
-    }
-
-    override fun getQuantity(): Quantity {
-        return quantity ?: Quantity.ONE
     }
 
     fun hasQuantity(): Boolean {
@@ -70,44 +65,12 @@ class IngredientRef : MutableItem {
         return sb.toString()
     }
 
-    fun get_idx(): Int {
-        return _idx
-    }
-
-    override fun getPreparation(): String {
-        return preparation!!
-    }
-
-    override fun getIngredient(): Ingredient {
-        return ingredient!!
-    }
-
-    fun set_idx(_idx: Int) {
-        this._idx = _idx
-    }
-
-    fun setRaw(raw: String?) {
-        this.raw = raw
-    }
-
-    override fun setQuantity(quantity: Quantity) {
-        this.quantity = quantity
-    }
-
-    override fun setPreparation(preparation: String) {
-        this.preparation = preparation
-    }
-
-    override fun setIngredient(ingredient: Ingredient) {
-        this.ingredient = ingredient
-    }
-
     companion object {
         @JvmField
         var BY_INGREDIENT_NAME =
             java.util.Comparator { a: IngredientRef, b: IngredientRef ->
-                val an = a.ingredient?.name ?: a.getRaw()
-                val bn = b.ingredient?.name ?: b.getRaw()
+                val an = a.ingredient?.name ?: a.raw!!
+                val bn = b.ingredient?.name ?: b.raw!!
                 an.compareTo(bn, ignoreCase = true)
             }
     }

@@ -9,21 +9,12 @@ import javax.persistence.*
 @DiscriminatorValue("Recipe")
 @JsonTypeName("Recipe")
 class Recipe : Ingredient, AggregateIngredient, Owned {
-    // this will gracefully store the same way as an @Embedded Acl will
+    // this will gracefully store the same way as an @Embedded Acl will,
+    // and gracefully emulate AccessControlled's owner property
     @ManyToOne
-    private var owner: User? = null
+    @get:JsonIgnore // but hide it from the client :)
+    override var owner: User? = null
 
-    // these will gracefully emulate AccessControlled's owner property
-    @JsonIgnore // but hide it from the client :)
-    override fun getOwner(): User {
-        return owner!!
-    }
-
-    override fun setOwner(owner: User) {
-        this.owner = owner
-    }
-
-    // end access control emulation
     var externalUrl: String? = null
     var directions: String? = null
     var yield: Int? = null
@@ -129,7 +120,7 @@ class Recipe : Ingredient, AggregateIngredient, Owned {
     private fun ensureRefOrder() {
         if (ingredients == null) return
         var order = 0
-        for (ref in ingredients!!) ref.set_idx(order++)
+        for (ref in ingredients!!) ref._idx = order++
     }
 
     @JsonIgnore

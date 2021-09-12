@@ -63,8 +63,8 @@ class TaskInfo {
                 info.componentIds = IdUtils.toIdList(task.orderedComponentsView)
             }
             if (task.hasIngredient()) {
-                info.ingredientId = task.ingredient.id
-                val q = task.quantity
+                info.ingredientId = task.ingredient!!.id
+                val q = task.quantity!!
                 info.quantity = q.quantity
                 if (q.hasUnits()) {
                     info.uomId = q.units!!.id

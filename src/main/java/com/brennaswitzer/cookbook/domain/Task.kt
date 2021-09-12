@@ -12,14 +12,17 @@ import javax.validation.constraints.NotNull
 @DiscriminatorValue("item")
 open class Task : BaseEntity, MutableItem {
     var name: @NotNull String? = null
+    override val raw: String?
+        get() = name
+
     var notes: String? = null
 
     @Column(name = "status_id")
     var status = TaskStatus.NEEDED
 
     @Embedded
-    private var quantity: Quantity? = null
-    private var preparation: String? = null
+    override var quantity: Quantity? = null
+    override var preparation: String? = null
     var position = 0
 
     @ManyToOne
@@ -40,7 +43,7 @@ open class Task : BaseEntity, MutableItem {
     private var components: MutableSet<Task?>? = null
 
     @ManyToOne(cascade = [CascadeType.MERGE])
-    private var ingredient: Ingredient? = null
+    override var ingredient: Ingredient? = null
 
     @ManyToOne
     var bucket: PlanBucket? = null
@@ -62,9 +65,9 @@ open class Task : BaseEntity, MutableItem {
         preparation: String?
     ) {
         this.name = name
-        setQuantity(quantity!!)
-        setIngredient(ingredient)
-        setPreparation(preparation!!)
+        this.quantity = quantity
+        this.ingredient = ingredient
+        this.preparation = preparation
     }
 
     constructor(name: String?, ingredient: Ingredient) : this(
@@ -276,14 +279,6 @@ open class Task : BaseEntity, MutableItem {
         return of(after.getParent(), after)
     }
 
-    override fun getRaw(): String {
-        return name!!
-    }
-
-    override fun getQuantity(): Quantity {
-        return quantity ?: Quantity.ONE
-    }
-
     fun hasIngredient(): Boolean {
         return ingredient != null
     }
@@ -296,32 +291,12 @@ open class Task : BaseEntity, MutableItem {
         return notes != null && !notes!!.isEmpty()
     }
 
-    override fun getPreparation(): String {
-        return preparation!!
-    }
-
     fun getParent(): Task? {
         return parent
     }
 
     fun getAggregate(): Task? {
         return aggregate
-    }
-
-    override fun getIngredient(): Ingredient {
-        return ingredient!!
-    }
-
-    override fun setQuantity(quantity: Quantity) {
-        this.quantity = quantity
-    }
-
-    override fun setPreparation(preparation: String) {
-        this.preparation = preparation
-    }
-
-    override fun setIngredient(ingredient: Ingredient) {
-        this.ingredient = ingredient
     }
 
     companion object {

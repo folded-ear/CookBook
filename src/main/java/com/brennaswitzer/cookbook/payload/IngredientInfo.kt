@@ -44,7 +44,7 @@ class IngredientInfo {
 
         fun asIngredientRef(em: EntityManager): IngredientRef {
             val ref = IngredientRef()
-            ref.setRaw(raw)
+            ref.raw = raw
             if (hasQuantity()) {
                 val uom = if (hasUomId()) em.find(
                     UnitOfMeasure::class.java, uomId
@@ -71,7 +71,7 @@ class IngredientInfo {
                 val info = Ref()
                 info.raw = ref.raw
                 if (ref.hasQuantity()) {
-                    val q = ref.quantity
+                    val q = ref.quantity!!
                     info.quantity = q.quantity
                     if (q.hasUnits()) {
                         info.uomId = q.units!!.id
@@ -79,8 +79,9 @@ class IngredientInfo {
                     }
                 }
                 if (ref.hasIngredient()) {
-                    info.ingredientId = ref.ingredient.id
-                    info.ingredient = ref.ingredient.name
+                    val ing = ref.ingredient!!
+                    info.ingredientId = ing.id
+                    info.ingredient = ing.name
                 }
                 info.preparation = ref.preparation
                 return info
@@ -142,7 +143,7 @@ class IngredientInfo {
             info.totalTime = r.totalTime
             info.calories = r.calories
             if (r.owner != null) {
-                info.ownerId = r.owner.id
+                info.ownerId = r.owner!!.id
             }
             return info
         }

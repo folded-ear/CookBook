@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull
 @DiscriminatorValue("plan")
 class TaskList : Task, AccessControlled {
     @Embedded
-    private var acl: @NotNull Acl? = Acl()
+    override var acl: @NotNull Acl? = Acl()
 
     @OneToMany(
         mappedBy = "plan",
@@ -21,7 +21,7 @@ class TaskList : Task, AccessControlled {
     constructor() {}
     constructor(name: String?) : super(name) {}
     constructor(owner: User?, name: String?) : super(name) {
-        setOwner(owner)
+        this.owner = owner
     }
 
     override fun setParent(parent: Task?) {
@@ -42,11 +42,4 @@ class TaskList : Task, AccessControlled {
         return buckets != null && !buckets!!.isEmpty()
     }
 
-    override fun getAcl(): @NotNull Acl? {
-        return acl
-    }
-
-    fun setAcl(acl: @NotNull Acl?) {
-        this.acl = acl
-    }
 }
