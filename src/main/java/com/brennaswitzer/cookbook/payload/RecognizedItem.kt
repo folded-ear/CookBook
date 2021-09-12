@@ -255,9 +255,7 @@ class RecognizedItem {
                     pos + start + c.length
                 )
             }
-            if (ranges == null || ranges!!.stream()
-                    .noneMatch { r: Range -> r.overlaps(r) }
-            ) {
+            if (ranges == null || ranges!!.stream().noneMatch(r::overlaps)) {
                 result.add(r)
             }
             pos += w.length + 1 // for the split space
