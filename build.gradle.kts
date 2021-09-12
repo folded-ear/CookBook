@@ -6,6 +6,12 @@ plugins {
     `maven-publish`
     antlr
     id("org.springframework.boot") version "2.1.5.RELEASE"
+
+    id("org.jetbrains.kotlin.jvm") version "1.5.21"
+    id("org.jetbrains.kotlin.kapt") version "1.5.21"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.5.21"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.5.21"
 }
 
 repositories {
@@ -16,9 +22,9 @@ repositories {
     }
 }
 
+val kotlinVersion = project.properties["kotlinVersion"]
 val springBootVersion = project.properties["springBootVersion"]
 val springSecurityVersion = project.properties["springSecurityVersion"]
-val lombokVersion = project.properties["lombokVersion"]
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
@@ -36,22 +42,19 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-s3:1.11.860")
     implementation("com.amazonaws:aws-java-sdk-textract:1.11.860")
     runtimeOnly("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
-    runtimeOnly("com.h2database:h2:1.4.199")
+    runtimeOnly("com.h2database:h2:1.4.199") // todo: this should be test-only, right?
     runtimeOnly("org.postgresql:postgresql:42.2.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     testImplementation("org.springframework.security:spring-security-test:${springSecurityVersion}")
-    compileOnly("org.projectlombok:lombok:1.18.18")
 
-    compileOnly("org.projectlombok:lombok:${lombokVersion}")
-    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    kapt("org.hibernate:hibernate-jpamodelgen:5.3.10.Final")
 
-    annotationProcessor("org.hibernate:hibernate-jpamodelgen:5.3.10.Final")
-
-    annotationProcessor("javax.xml.bind:jaxb-api:2.3.1")
+    kapt("javax.xml.bind:jaxb-api:2.3.1")
 
     antlr("org.antlr:antlr4:4.7.2")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
 }
 
 group = "com.brennaswitzer"
@@ -62,6 +65,19 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
+    }
+}
+
+tasks {
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
 }
 

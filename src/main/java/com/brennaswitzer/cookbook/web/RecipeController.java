@@ -12,7 +12,6 @@ import com.brennaswitzer.cookbook.services.StorageService;
 import com.brennaswitzer.cookbook.util.InfoHelper;
 import com.brennaswitzer.cookbook.util.ShareHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -89,10 +88,13 @@ public class RecipeController {
         return new ResponseEntity<>(infoHelper.getRecipeInfo(recipe1), HttpStatus.CREATED);
     }
 
-    @SuppressWarnings("MVCPathVariableInspection")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
-    public ResponseEntity<?> updateRecipe(@RequestParam("info") String r, @RequestParam(required = false) MultipartFile photo) throws IOException {
+    public ResponseEntity<?> updateRecipe(
+            @PathVariable("id") @SuppressWarnings("unused") Long id,
+            @RequestParam("info") String r,
+            @RequestParam(required = false) MultipartFile photo
+    ) throws IOException {
 
         IngredientInfo info = mapToInfo(r);
 
@@ -152,10 +154,9 @@ public class RecipeController {
     // begin kludge (3 of 3)
     @Autowired private EntityManager em;
     @GetMapping("/bulk-ingredients/{ids}")
-    @SneakyThrows
     public Collection<IngredientInfo> getIngredientsInBulk(
             @PathVariable("ids") Collection<Long> ids
-    ) {
+    ) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         List<IngredientInfo> infos = new ArrayList<>(ids.size());
         for (Long id : ids) {
             infos.add(getIngredientById(id));

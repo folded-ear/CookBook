@@ -1,15 +1,11 @@
-package com.brennaswitzer.cookbook.config;
+package com.brennaswitzer.cookbook.config
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "app.aws")
-@Getter
-@Setter
-public class AWSProperties {
-    private String region;
-    private String accessKey;
-    private String secretKey;
-    private String bucketName;
+class AWSProperties {
+    var region: String? = null
+    var accessKey: String? = null
+    var secretKey: String? = null
+    var bucketName: String? = null
 }

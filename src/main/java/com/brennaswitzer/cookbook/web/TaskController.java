@@ -56,10 +56,10 @@ public class TaskController {
     @GetMapping("/{id}/subtasks")
     @ResponseStatus(HttpStatus.OK)
     public List<TaskInfo> getSubtasks(
-            @PathVariable("id") Long parentId
+            @PathVariable("id") Long id
     ) {
         return TaskInfo.fromTasks(taskService
-                .getTaskById(parentId)
+                .getTaskById(id)
                 .getOrderedSubtasksView());
     }
 

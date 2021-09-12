@@ -44,23 +44,23 @@ public class DbController {
     @GetMapping("/{table}")
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Map<String, Object>> getRecords(
-            @PathVariable("table") String tableName
+            @PathVariable("table") String table
     ) {
-        validateTableName(tableName);
+        validateTableName(table);
         return tmpl.queryForList("select *\n" +
-                "from " + tableName + "\n" +
+                "from " + table + "\n" +
                 "order by 1");
     }
 
     @GetMapping("/{table}/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Map<String, Object> getRecord(
-            @PathVariable("table") String tableName,
+            @PathVariable("table") String table,
             @PathVariable("id") Long id
     ) {
-        validateTableName(tableName);
+        validateTableName(table);
         return tmpl.queryForMap("select *\n" +
-                "from " + tableName + "\n" +
+                "from " + table + "\n" +
                 "where id = ?", id);
     }
 
