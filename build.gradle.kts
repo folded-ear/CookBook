@@ -53,7 +53,7 @@ dependencies {
 
 group = "com.brennaswitzer"
 version = "0.0.1-SNAPSHOT"
-description = "cookbook"
+description = "Personal CookBook and meal planning software"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {
