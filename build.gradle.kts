@@ -6,10 +6,12 @@ plugins {
     java
     `maven-publish`
     antlr
+    id("org.springframework.boot").version("2.1.5.RELEASE")
 }
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
