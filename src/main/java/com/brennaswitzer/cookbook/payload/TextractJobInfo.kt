@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 class TextractJobInfo {
     var id: Long? = null
     var photo: FileInfo? = null
-    var isReady = false
+    var ready = false
     var lines: Set<TextractJob.Line>? = null
 
     companion object {
@@ -21,7 +21,7 @@ class TextractJobInfo {
             val info = TextractJobInfo()
             info.id = job.id
             info.photo = FileInfo.fromS3File(job.photo!!, storageService)
-            info.isReady = job.isReady
+            info.ready = job.ready
             return info
         }
 
@@ -31,7 +31,7 @@ class TextractJobInfo {
             storageService: StorageService
         ): TextractJobInfo {
             val info = fromJob(job, storageService)
-            if (job.isReady) {
+            if (job.ready) {
                 info.lines = job.lines
             }
             return info

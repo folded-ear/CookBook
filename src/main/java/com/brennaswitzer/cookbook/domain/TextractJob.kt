@@ -120,7 +120,9 @@ class TextractJob : BaseEntity() {
         return photo != null
     }
 
-    var isReady = false
+    var ready = false
+
+    fun isReady() = ready
 
     @ElementCollection
     var lines: Set<Line>? = null
