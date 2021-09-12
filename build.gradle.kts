@@ -35,6 +35,15 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE")
     testImplementation("org.springframework.security:spring-security-test:5.1.5.RELEASE")
     compileOnly("org.projectlombok:lombok:1.18.18")
+
+    compileOnly("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.20")
+    testCompileOnly("org.projectlombok:lombok:1.18.20")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.20")
+
+    annotationProcessor("org.hibernate:hibernate-jpamodelgen:5.3.10.Final")
+
+    annotationProcessor("javax.xml.bind:jaxb-api:2.3.1")
 }
 
 group = "com.brennaswitzer"
