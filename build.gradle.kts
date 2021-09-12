@@ -69,3 +69,9 @@ tasks.withType<JavaCompile>() {
 tasks.withType<AntlrTask>() {
     arguments = arguments + listOf("-visitor", "-no-listener", "-long-messages")
 }
+
+tasks.withType<Delete>() {
+    delete = setOf (
+        "public_html"
+    )
+}

@@ -32,14 +32,17 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - name: Cache Maven packages
+      - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - name: Build API
-        run: mvn --batch-mode --update-snapshots verify
+        run: ./gradlew build --console plain --refresh-dependencies --rerun-tasks
       - name: Bundle for Beanstalk
         # run this on every branch, even though only master will deploy it
         # files have a .yaml extension for easier editing, but EB needs .config
@@ -49,7 +52,7 @@ jobs:
           zip target/eb_bundle.zip -r public_html
           zip target/eb_bundle.zip -r newrelic
           zip target/eb_bundle.zip -r .ebextensions
-          zip target/eb_bundle.zip -j target/cookbook-*.jar
+          zip target/eb_bundle.zip -j build/libs/cookbook-*.jar
           zip target/eb_bundle.zip Procfile
       - name: Deploy Beanstalk
         if: ${{ github.ref == 'refs/heads/master' }}
