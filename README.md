@@ -12,7 +12,7 @@ You'll need a recent-ish Gradle and Node/NPM pair to build. Specific versions
 may be stipulated at some point, but let's just say Gradle 7 and Node 10.
 
 The easiest way is to install `nvm` (see https://github.com/nvm-sh/nvm ) and
-use the included `mvnw` script:
+use the included `gradlew` script:
 
     nvm use # run `nvm install` if it says you need to
     cd client
