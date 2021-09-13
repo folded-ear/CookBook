@@ -12,7 +12,7 @@ abstract class BaseEntity : Identified {
     override var id: Long? = null
 
     @Column(updatable = false)
-    private val _eqkey = IdUtils.next(javaClass)
+    val _eqkey = IdUtils.next(javaClass)
 
     @Column(name = "created_at")
     var createdAt: @NotNull Instant? = null
@@ -29,32 +29,28 @@ abstract class BaseEntity : Identified {
 
     /**
      * I indicate object equality, which in this case means an assignable type
-     * and the same [.get_eqkey]. Using the `_eqkey` (which is
-     * database-persisted) instead of the object's memory location allows for
-     * proper operation across the persistence boundary. Using an assignable
-     * type (instead of type equality) allows for proper operation across
-     * persistence proxies. It has the side effect of allow subtypes to be
-     * considered equal, but the `_eqkey` generator embeds type info which
-     * will break such ties in the normal case.
+     * and the same [._eqkey]. Using the `_eqkey` (which is database-persisted)
+     * instead of the object's memory location allows for proper operation
+     * across the persistence boundary. Using an assignable type (instead of
+     * type equality) allows for proper operation across persistence proxies. It
+     * has the side effect of allow subtypes to be considered equal, but the
+     * `_eqkey` generator embeds type info which will break such ties in the
+     * normal case.
      *
      * @param `object` The object to check for equality with this one
      * @return Whether the passed object is equal to this one
      */
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
-        return if (!BaseEntity::class.java.isAssignableFrom(other.javaClass)) false else get_eqkey() == (other as BaseEntity).get_eqkey()
+        return if (!BaseEntity::class.java.isAssignableFrom(other.javaClass)) false else _eqkey == (other as BaseEntity)._eqkey
     }
 
     override fun hashCode(): Int {
-        return get_eqkey().hashCode()
+        return _eqkey.hashCode()
     }
 
     override fun toString(): String {
         return javaClass.simpleName + "#" + id
-    }
-
-    fun get_eqkey(): @NotNull Long? {
-        return _eqkey
     }
 
 }

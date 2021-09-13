@@ -6,7 +6,13 @@ import java.util.*
 class RecognizedItem {
     var raw: String? = null
     var cursor = 0
-    private var ranges: MutableSet<Range>? = null
+    var ranges: MutableSet<Range>? = null
+        get() {
+            if (field == null) {
+                field = TreeSet(Range.BY_POSITION)
+            }
+            return field!!
+        }
     var suggestions: MutableSet<Suggestion>? = null
         get() {
             if (field == null) {
@@ -32,8 +38,8 @@ class RecognizedItem {
         val `other$raw`: Any? = other.raw
         if (if (`this$raw` == null) `other$raw` != null else `this$raw` != `other$raw`) return false
         if (cursor != other.cursor) return false
-        val `this$ranges`: Any = getRanges()
-        val `other$ranges`: Any = other.getRanges()
+        val `this$ranges`: Any = this.ranges!!
+        val `other$ranges`: Any = other.ranges!!
         if (if (`this$ranges` == null) `other$ranges` != null else `this$ranges` != `other$ranges`) return false
         val `this$suggestions`: Any? = suggestions
         val `other$suggestions`: Any? = other.suggestions
@@ -50,15 +56,15 @@ class RecognizedItem {
         val `$raw`: Any? = raw
         result = result * PRIME + (`$raw`?.hashCode() ?: 43)
         result = result * PRIME + cursor
-        val `$ranges`: Any = getRanges()
-        result = result * PRIME + (`$ranges`?.hashCode() ?: 43)
+        val `$ranges`: Any = ranges!!
+        result = result * PRIME + (`$ranges`.hashCode() ?: 43)
         val `$suggestions`: Any? = suggestions
         result = result * PRIME + (`$suggestions`?.hashCode() ?: 43)
         return result
     }
 
     override fun toString(): String {
-        return "RecognizedItem(raw=" + raw + ", cursor=" + cursor + ", ranges=" + getRanges() + ", suggestions=" + suggestions + ")"
+        return "RecognizedItem(raw=" + raw + ", cursor=" + cursor + ", ranges=" + ranges + ", suggestions=" + suggestions + ")"
     }
 
     enum class Type {
@@ -206,19 +212,8 @@ class RecognizedItem {
         }
     }
 
-    fun getRanges(): MutableSet<Range> {
-        if (ranges == null) {
-            ranges = TreeSet(Range.BY_POSITION)
-        }
-        return ranges!!
-    }
-
-    fun setRanges(ranges: MutableSet<Range>?) {
-        this.ranges = ranges
-    }
-
     fun withRange(r: Range): RecognizedItem {
-        getRanges().add(r)
+        ranges!!.add(r)
         return this
     }
 

@@ -41,7 +41,7 @@ class Quantity {
             val q = queue.remove()
             if (!visited.add(q.units)) continue
             if (q.units!!.equals(uom)) return q
-            for ((key, value) in q.units!!.getConversions()) {
+            for ((key, value) in q.units!!.conversions) {
                 if (visited.contains(key)) continue
                 queue.add(
                     Quantity(

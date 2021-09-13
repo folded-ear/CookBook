@@ -15,14 +15,6 @@ class PlanMessage {
         newIds!![newId] = oldId
     }
 
-    fun getNewIds(): Map<Long, Any>? {
-        return newIds
-    }
-
-    fun setNewIds(newIds: MutableMap<Long, Any>?) {
-        this.newIds = newIds
-    }
-
     override fun equals(o: Any?): Boolean {
         if (o === this) return true
         if (o !is PlanMessage) return false
@@ -37,8 +29,8 @@ class PlanMessage {
         val `this$info` = info
         val `other$info` = other.info
         if (if (`this$info` == null) `other$info` != null else `this$info` != `other$info`) return false
-        val `this$newIds`: Any? = getNewIds()
-        val `other$newIds`: Any? = other.getNewIds()
+        val `this$newIds`: Any? = newIds
+        val `other$newIds`: Any? = other.newIds
         return if (if (`this$newIds` == null) `other$newIds` != null else `this$newIds` != `other$newIds`) false else true
     }
 
@@ -55,12 +47,12 @@ class PlanMessage {
         result = result * PRIME + (`$id`?.hashCode() ?: 43)
         val `$info` = info
         result = result * PRIME + (`$info`?.hashCode() ?: 43)
-        val `$newIds`: Any? = getNewIds()
+        val `$newIds`: Any? = newIds
         result = result * PRIME + (`$newIds`?.hashCode() ?: 43)
         return result
     }
 
     override fun toString(): String {
-        return "PlanMessage(type=" + type + ", id=" + id + ", info=" + info + ", newIds=" + getNewIds() + ")"
+        return "PlanMessage(type=" + type + ", id=" + id + ", info=" + info + ", newIds=" + newIds + ")"
     }
 }

@@ -36,7 +36,7 @@ class UnitOfMeasure : BaseEntity {
     @ElementCollection
     @MapKeyJoinColumn(name = "target_id")
     @Column(name = "factor")
-    private val conversions: MutableMap<UnitOfMeasure, Double> = HashMap()
+    val conversions: MutableMap<UnitOfMeasure, Double> = HashMap()
 
     constructor() {}
     constructor(name: String, vararg aliases: String?) {
@@ -83,10 +83,6 @@ class UnitOfMeasure : BaseEntity {
 
     fun removeConversion(uom: UnitOfMeasure): Double? {
         return conversions.remove(uom)
-    }
-
-    fun getConversions(): Map<UnitOfMeasure, Double> {
-        return Collections.unmodifiableMap(conversions)
     }
 
     override fun toString(): String {
