@@ -51,7 +51,7 @@ class IngredientInfo {
                 ) else (if (hasUnits()) UnitOfMeasure.ensure(
                     em,
                     units
-                ) else null)!!
+                ) else null)
                 ref.quantity = Quantity(quantity!!, uom)
             }
             ref.preparation = preparation!!

@@ -6,20 +6,13 @@ import java.util.*
 class RecognizedItem {
     var raw: String? = null
     var cursor = 0
-    var ranges: MutableSet<Range>? = null
-        get() {
-            if (field == null) {
-                field = TreeSet(Range.BY_POSITION)
-            }
-            return field!!
-        }
-    var suggestions: MutableSet<Suggestion>? = null
-        get() {
-            if (field == null) {
-                field = TreeSet(Suggestion.BY_POSITION_AND_NAME)
-            }
-            return field
-        }
+    val ranges: MutableSet<Range> by lazy {
+        TreeSet(Range.BY_POSITION)
+    }
+
+    val suggestions: MutableSet<Suggestion> by lazy {
+        TreeSet(Suggestion.BY_POSITION_AND_NAME)
+    }
 
     @JvmOverloads
     constructor(raw: String, cursor: Int = raw.length) {

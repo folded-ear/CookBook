@@ -64,11 +64,14 @@ class TaskInfo {
             }
             if (task.hasIngredient()) {
                 info.ingredientId = task.ingredient!!.id
-                val q = task.quantity!!
-                info.quantity = q.quantity
-                if (q.hasUnits()) {
-                    info.uomId = q.units!!.id
-                    info.units = q.units!!.name
+                val q = task.quantity
+                if (q != null) {
+                    info.quantity = q.quantity
+                    val u = q.units
+                    if (u != null) {
+                        info.uomId = u.id
+                        info.units = u.name
+                    }
                 }
                 info.preparation = task.preparation
             }
