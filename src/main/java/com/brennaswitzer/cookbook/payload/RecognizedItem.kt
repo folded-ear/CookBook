@@ -63,27 +63,23 @@ class RecognizedItem {
         UNKNOWN, AMOUNT, UNIT, NEW_UNIT, ITEM, NEW_ITEM
     }
 
-    class Range {
-        var start = 0
-        var end = 0
-        var type: Type? = null
+    class Range(
+        var start: Int,
+        var end: Int,
+    ) {
+        var type: Type? = Type.UNKNOWN
         var value: Any? = null
 
         @JvmOverloads
-        constructor(start: Int, end: Int, type: Type? = Type.UNKNOWN) {
-            this.start = start
-            this.end = end
-            this.type = type
-        }
-
-        constructor(start: Int, end: Int, type: Type?, value: Any?) {
-            this.start = start
-            this.end = end
+        constructor(
+            start: Int,
+            end: Int,
+            type: Type?,
+            value: Any? = null,
+        ) : this(start, end) {
             this.type = type
             this.value = value
         }
-
-        constructor() {}
 
         fun of(type: Type?): Range {
             return Range(
@@ -152,16 +148,10 @@ class RecognizedItem {
         }
     }
 
-    class Suggestion {
-        var name: String? = null
-        var target: Range? = null
-
-        constructor(name: String?, target: Range?) {
-            this.name = name
-            this.target = target
-        }
-
-        constructor() {}
+    class Suggestion(
+        var name: String,
+        var target: Range,
+    ) {
 
         override fun equals(other: Any?): Boolean {
             if (other === this) return true
@@ -197,7 +187,7 @@ class RecognizedItem {
         companion object {
             @JvmField
             var BY_POSITION =
-                Comparator.comparingInt { a: Suggestion -> a.target!!.start }
+                Comparator.comparingInt { a: Suggestion -> a.target.start }
 
             @JvmField
             var BY_POSITION_AND_NAME = BY_POSITION.thenComparing(
@@ -226,12 +216,13 @@ class RecognizedItem {
     }
 
     fun unrecognizedWordsThrough(endIndex: Int): Iterable<Range> {
-        return unrecognizedWords(raw!!.substring(0, endIndex))
+        return unrecognizedWords(raw?.substring(0, endIndex))
     }
 
     private fun unrecognizedWords(raw: String?): Iterable<Range> {
         val result: MutableList<Range> = LinkedList()
-        val words = raw!!.split(" ").toTypedArray()
+        if (raw == null) return result
+        val words = raw.split(" ").toTypedArray()
         var pos = 0
         for (w in words) {
             val c = EnglishUtils.canonicalize(w)
@@ -245,7 +236,7 @@ class RecognizedItem {
                     pos + start + c.length
                 )
             }
-            if (ranges == null || ranges!!.stream().noneMatch(r::overlaps)) {
+            if (ranges.stream().noneMatch(r::overlaps)) {
                 result.add(r)
             }
             pos += w.length + 1 // for the split space

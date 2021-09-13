@@ -2,13 +2,12 @@ package com.brennaswitzer.cookbook.domain
 
 import org.hibernate.annotations.BatchSize
 import javax.persistence.*
-import javax.validation.constraints.NotNull
 
 @Entity
 @DiscriminatorValue("plan")
 class TaskList : Task, AccessControlled {
     @Embedded
-    override var acl: @NotNull Acl? = Acl()
+    override var acl = Acl()
 
     @OneToMany(
         mappedBy = "plan",

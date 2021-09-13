@@ -1,6 +1,5 @@
 package com.brennaswitzer.cookbook.payload
 
-import com.brennaswitzer.cookbook.domain.PlanBucket
 import com.brennaswitzer.cookbook.domain.Task
 import com.brennaswitzer.cookbook.domain.TaskList
 import com.brennaswitzer.cookbook.domain.TaskStatus
@@ -36,9 +35,8 @@ class TaskInfo {
     var bucketId: Long? = null
     var preparation: String? = null
 
-    fun hasSubtasks(): Boolean {
-        return subtaskIds != null && subtaskIds!!.size > 0
-    }
+    fun hasSubtasks() =
+        subtaskIds?.isNotEmpty() ?: false
 
     companion object {
         @JvmStatic
@@ -72,9 +70,7 @@ class TaskInfo {
                 }
                 info.preparation = task.preparation
             }
-            if (task.hasBucket()) {
-                info.bucketId = task.bucket!!.id
-            }
+            info.bucketId = task.bucket?.id
             return info
         }
 
@@ -87,18 +83,17 @@ class TaskInfo {
         fun fromPlan(plan: TaskList): TaskInfo {
             val info = fromTask(plan)
             info.acl = AclInfo.fromAcl(plan.acl)
-            if (plan.hasBuckets()) {
-                info.buckets = plan.buckets!!.stream()
-                    .map { obj: PlanBucket? -> PlanBucketInfo.from(obj!!) }
-                    .collect(Collectors.toList())
-            }
+            info.buckets = plan.buckets
+                ?.stream()
+                ?.map(PlanBucketInfo.Companion::from)
+                ?.collect(Collectors.toList())
             return info
         }
 
         @JvmStatic
         fun fromTasks(tasks: Iterable<Task>): List<TaskInfo> {
             return StreamSupport.stream(tasks.spliterator(), false)
-                .map { task: Task -> fromTask(task) }
+                .map { fromTask(it) }
                 .collect(Collectors.toList())
         }
 
