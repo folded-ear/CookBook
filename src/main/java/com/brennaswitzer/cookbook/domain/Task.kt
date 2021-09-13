@@ -175,7 +175,7 @@ class Task : BaseEntity, MutableItem {
         return this.parent != null
     }
 
-    val taskList: TaskList?
+    val taskList: TaskList
         get() = this.parent!!.taskList
 
     /**
