@@ -26,7 +26,8 @@ class IngredientInfo {
 
         @Deprecated("")
         fun hasUnits(): Boolean {
-            return units != null && "" != units && !units!!.trim { it <= ' ' }
+            val u = units
+            return u != null && "" != u && !u.trim { it <= ' ' }
                 .isEmpty()
         }
 
@@ -45,16 +46,17 @@ class IngredientInfo {
         fun asIngredientRef(em: EntityManager): IngredientRef {
             val ref = IngredientRef()
             ref.raw = raw
-            if (hasQuantity()) {
+            val q = quantity
+            if (q != null) {
                 val uom = if (hasUomId()) em.find(
                     UnitOfMeasure::class.java, uomId
                 ) else (if (hasUnits()) UnitOfMeasure.ensure(
                     em,
                     units
                 ) else null)
-                ref.quantity = Quantity(quantity!!, uom)
+                ref.quantity = Quantity(q, uom)
             }
-            ref.preparation = preparation!!
+            ref.preparation = preparation
             if (hasIngredientId()) {
                 ref.ingredient = em.find(Ingredient::class.java, ingredientId)
             } else if (hasIngredient()) {
@@ -70,16 +72,17 @@ class IngredientInfo {
             fun from(ref: IngredientRef): Ref {
                 val info = Ref()
                 info.raw = ref.raw
-                if (ref.hasQuantity()) {
-                    val q = ref.quantity!!
+                val q = ref.quantity
+                if (q != null) {
                     info.quantity = q.quantity
-                    if (q.hasUnits()) {
-                        info.uomId = q.units!!.id
-                        info.units = q.units!!.name
+                    val u = q.units
+                    if (u != null) {
+                        info.uomId = u.id
+                        info.units = u.name
                     }
                 }
-                if (ref.hasIngredient()) {
-                    val ing = ref.ingredient!!
+                val ing = ref.ingredient
+                if (ing != null) {
                     info.ingredientId = ing.id
                     info.ingredient = ing.name
                 }
@@ -120,13 +123,15 @@ class IngredientInfo {
         r.yield = `yield`
         r.totalTime = totalTime
         r.calories = calories
-        if (ingredients != null) {
-            r.ingredients = ingredients!!
+        val ings = ingredients
+        if (ings != null) {
+            r.ingredients = ings
                 .stream()
                 .map { ref: Ref -> ref.asIngredientRef(em) }
                 .collect(Collectors.toList())
         }
-        if (photoFocus != null && photoFocus!!.size == 2) {
+        val photoFocus = photoFocus
+        if (photoFocus != null && photoFocus.size == 2) {
             r.getPhoto(true).focusArray = photoFocus
         }
         return r
@@ -142,17 +147,16 @@ class IngredientInfo {
             info.yield = r.yield
             info.totalTime = r.totalTime
             info.calories = r.calories
-            if (r.owner != null) {
-                info.ownerId = r.owner!!.id
-            }
+            info.ownerId = r.owner?.id
             return info
         }
 
         @JvmStatic
         fun from(it: AggregateIngredient): IngredientInfo {
             val info = from(it as Ingredient)
-            if (it.ingredients != null) {
-                info.ingredients = it.ingredients!!
+            val ings = it.ingredients
+            if (ings != null) {
+                info.ingredients = ings
                     .stream()
                     .map { ref: IngredientRef -> Ref.from(ref) }
                     .collect(Collectors.toList())

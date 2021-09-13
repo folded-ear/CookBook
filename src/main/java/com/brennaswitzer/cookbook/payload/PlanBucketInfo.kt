@@ -17,7 +17,7 @@ class PlanBucketInfo {
         @JvmStatic
         fun from(bucket: PlanBucket): PlanBucketInfo {
             val info = PlanBucketInfo()
-            info.id = bucket.id!!
+            info.id = bucket.id
             info.name = bucket.name
             info.date = bucket.date
             return info

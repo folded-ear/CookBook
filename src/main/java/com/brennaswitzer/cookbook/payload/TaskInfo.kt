@@ -50,20 +50,17 @@ class TaskInfo {
                 info.notes = task.notes
             }
             info.status = task.status
-            if (task.isSubtask) {
-                info.parentId = task.parent!!.id
-            }
+            info.parentId = task.parent?.id
             if (task.hasSubtasks()) {
                 info.subtaskIds = IdUtils.toIdList(task.orderedSubtasksView)
             }
-            if (task.isComponent) {
-                info.aggregateId = task.aggregate!!.id
-            }
+            info.aggregateId = task.aggregate?.id
             if (task.hasComponents()) {
                 info.componentIds = IdUtils.toIdList(task.orderedComponentsView)
             }
-            if (task.hasIngredient()) {
-                info.ingredientId = task.ingredient!!.id
+            val ing = task.ingredient
+            if (ing != null) {
+                info.ingredientId = ing.id
                 val q = task.quantity
                 if (q != null) {
                     info.quantity = q.quantity

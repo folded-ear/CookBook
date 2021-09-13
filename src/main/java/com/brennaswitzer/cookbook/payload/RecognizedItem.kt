@@ -25,18 +25,17 @@ class RecognizedItem {
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is RecognizedItem) return false
-        val other = other
         if (!other.canEqual(this as Any)) return false
         val `this$raw`: Any? = raw
         val `other$raw`: Any? = other.raw
         if (if (`this$raw` == null) `other$raw` != null else `this$raw` != `other$raw`) return false
         if (cursor != other.cursor) return false
-        val `this$ranges`: Any = this.ranges!!
-        val `other$ranges`: Any = other.ranges!!
-        if (if (`this$ranges` == null) `other$ranges` != null else `this$ranges` != `other$ranges`) return false
-        val `this$suggestions`: Any? = suggestions
-        val `other$suggestions`: Any? = other.suggestions
-        return if (if (`this$suggestions` == null) `other$suggestions` != null else `this$suggestions` != `other$suggestions`) false else true
+        val `this$ranges`: Any = this.ranges
+        val `other$ranges`: Any = other.ranges
+        if (`this$ranges` != `other$ranges`) return false
+        val `this$suggestions`: Any = suggestions
+        val `other$suggestions`: Any = other.suggestions
+        return if (`this$suggestions` != `other$suggestions`) false else true
     }
 
     protected fun canEqual(other: Any?): Boolean {
@@ -49,10 +48,10 @@ class RecognizedItem {
         val `$raw`: Any? = raw
         result = result * PRIME + (`$raw`?.hashCode() ?: 43)
         result = result * PRIME + cursor
-        val `$ranges`: Any = ranges!!
+        val `$ranges`: Any = ranges
         result = result * PRIME + (`$ranges`.hashCode() ?: 43)
-        val `$suggestions`: Any? = suggestions
-        result = result * PRIME + (`$suggestions`?.hashCode() ?: 43)
+        val `$suggestions`: Any = suggestions
+        result = result * PRIME + (`$suggestions`.hashCode() ?: 43)
         return result
     }
 
@@ -196,8 +195,11 @@ class RecognizedItem {
         }
 
         companion object {
+            @JvmField
             var BY_POSITION =
                 Comparator.comparingInt { a: Suggestion -> a.target!!.start }
+
+            @JvmField
             var BY_POSITION_AND_NAME = BY_POSITION.thenComparing(
                 { a: Suggestion -> a.name },
                 java.lang.String.CASE_INSENSITIVE_ORDER
@@ -206,12 +208,12 @@ class RecognizedItem {
     }
 
     fun withRange(r: Range): RecognizedItem {
-        ranges!!.add(r)
+        ranges.add(r)
         return this
     }
 
     fun withSuggestion(c: Suggestion): RecognizedItem {
-        suggestions!!.add(c)
+        suggestions.add(c)
         return this
     }
 
