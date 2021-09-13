@@ -125,10 +125,10 @@ class RecognizedItem {
             return this
         }
 
-        override fun equals(o: Any?): Boolean {
-            if (o === this) return true
-            if (o !is Range) return false
-            val other = o
+        override fun equals(other: Any?): Boolean {
+            if (other === this) return true
+            if (other !is Range) return false
+            val other = other
             if (!other.canEqual(this as Any)) return false
             if (start != other.start) return false
             if (end != other.end) return false
@@ -171,10 +171,10 @@ class RecognizedItem {
 
         constructor() {}
 
-        override fun equals(o: Any?): Boolean {
-            if (o === this) return true
-            if (o !is Suggestion) return false
-            val other = o
+        override fun equals(other: Any?): Boolean {
+            if (other === this) return true
+            if (other !is Suggestion) return false
+            val other = other
             if (!other.canEqual(this as Any)) return false
             val `this$name`: Any? = name
             val `other$name`: Any? = other.name

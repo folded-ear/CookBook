@@ -6,10 +6,11 @@ class IngredientMessage {
     var type: String? = null
     var id: Long? = null
     var info: IngredientInfo? = null
-    override fun equals(o: Any?): Boolean {
-        if (o === this) return true
-        if (o !is IngredientMessage) return false
-        val other = o
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is IngredientMessage) return false
+        val other = other
         if (!other.canEqual(this as Any)) return false
         val `this$type`: Any? = type
         val `other$type`: Any? = other.type
