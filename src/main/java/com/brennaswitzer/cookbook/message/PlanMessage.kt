@@ -7,7 +7,7 @@ class PlanMessage {
     var type: String? = null
     var id: Long? = null
     var info: Any? = null
-    private var newIds: MutableMap<Long, Any>? = null
+    var newIds: MutableMap<Long, Any>? = null
     fun addNewId(newId: Long, oldId: Any) {
         if (newIds == null) {
             newIds = HashMap()
