@@ -30,6 +30,7 @@ class TaskList : Task, AccessControlled {
         this.owner = owner
     }
 
+    @Suppress("UNUSED_PARAMETER")
     override var parent
         get() = super.parent
         set(parent) =

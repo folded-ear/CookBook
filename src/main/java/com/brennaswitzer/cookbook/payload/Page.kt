@@ -19,7 +19,7 @@ class Page<E>(
         if (isLast != other.isLast) return false
         val `this$content`: Any = content
         val `other$content`: Any = other.content
-        return if (if (`this$content` == null) `other$content` != null else `this$content` != `other$content`) false else true
+        return !(`this$content` != `other$content`)
     }
 
     protected fun canEqual(other: Any?): Boolean {
@@ -34,7 +34,7 @@ class Page<E>(
         result = result * PRIME + if (isFirst) 79 else 97
         result = result * PRIME + if (isLast) 79 else 97
         val `$content`: Any = content
-        result = result * PRIME + (`$content`?.hashCode() ?: 43)
+        result = result * PRIME + `$content`.hashCode()
         return result
     }
 

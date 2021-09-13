@@ -153,8 +153,8 @@ class Task : BaseEntity, MutableItem {
         return componentCount != 0
     }
 
-    fun isDescendant(t: Task?): Boolean {
-        var t = t
+    fun isDescendant(other: Task?): Boolean {
+        var t = other
         while (t != null) {
             if (t === this) return true
             t = t.parent
@@ -162,8 +162,8 @@ class Task : BaseEntity, MutableItem {
         return false
     }
 
-    fun isDescendantComponent(t: Task?): Boolean {
-        var t = t
+    fun isDescendantComponent(other: Task?): Boolean {
+        var t = other
         while (t != null) {
             if (t === this) return true
             t = t.aggregate

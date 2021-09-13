@@ -25,11 +25,8 @@ class IngredientInfo {
         }
 
         @Deprecated("")
-        fun hasUnits(): Boolean {
-            val u = units
-            return u != null && "" != u && !u.trim { it <= ' ' }
-                .isEmpty()
-        }
+        fun hasUnits() =
+            units?.isNotBlank() ?: false
 
         fun hasUomId(): Boolean {
             return uomId != null

@@ -20,9 +20,7 @@ class User : BaseEntity {
     constructor() {}
     constructor(
         name: String?,
-        username: String?,
-        email: String?,
-        password: String?
+        email: String?
     ) {
         this.name = name
         this.email = email

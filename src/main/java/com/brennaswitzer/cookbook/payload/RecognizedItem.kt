@@ -49,9 +49,9 @@ class RecognizedItem {
         result = result * PRIME + (`$raw`?.hashCode() ?: 43)
         result = result * PRIME + cursor
         val `$ranges`: Any = ranges
-        result = result * PRIME + (`$ranges`.hashCode() ?: 43)
+        result = result * PRIME + `$ranges`.hashCode()
         val `$suggestions`: Any = suggestions
-        result = result * PRIME + (`$suggestions`.hashCode() ?: 43)
+        result = result * PRIME + `$suggestions`.hashCode()
         return result
     }
 
