@@ -25,8 +25,8 @@ class TaskList : Task, AccessControlled {
         }
 
     constructor() {}
-    constructor(name: String?) : super(name) {}
-    constructor(owner: User?, name: String?) : super(name) {
+    constructor(name: String) : super(name) {}
+    constructor(owner: User?, name: String) : super(name) {
         this.owner = owner
     }
 

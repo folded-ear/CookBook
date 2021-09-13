@@ -88,19 +88,19 @@ class Task : BaseEntity, MutableItem {
     var bucket: PlanBucket? = null
 
     constructor() {}
-    constructor(name: String?) {
+    constructor(name: String) {
         this.name = name
     }
 
-    internal constructor(name: String?, position: Int) {
+    internal constructor(name: String, position: Int) {
         this.name = name
         this.position = position
     }
 
     constructor(
-        name: String?,
+        name: String,
         quantity: Quantity?,
-        ingredient: Ingredient,
+        ingredient: Ingredient?,
         preparation: String?
     ) {
         this.name = name
@@ -109,7 +109,7 @@ class Task : BaseEntity, MutableItem {
         this.preparation = preparation
     }
 
-    constructor(name: String?, ingredient: Ingredient) : this(
+    constructor(name: String, ingredient: Ingredient?) : this(
         name,
         null,
         ingredient,

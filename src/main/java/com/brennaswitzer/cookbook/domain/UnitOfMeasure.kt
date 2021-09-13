@@ -111,6 +111,7 @@ class UnitOfMeasure : BaseEntity {
             entityManager: EntityManager,
             name: String?
         ): Optional<UnitOfMeasure> {
+            @Suppress("NAME_SHADOWING")
             var name = name ?: return Optional.empty()
             name = EnglishUtils.unpluralize(name.trim { it <= ' ' })
             var uoms = entityManager.createNamedQuery(
