@@ -25,7 +25,13 @@ class UnitOfMeasure : BaseEntity {
 
     @ElementCollection
     @Column(name = "alias")
-    private var aliases: MutableSet<String?>? = null
+    var aliases: MutableSet<String?>? = null
+        get() {
+            if (field == null) {
+                field = HashSet()
+            }
+            return field
+        }
 
     @ElementCollection
     @MapKeyJoinColumn(name = "target_id")
@@ -54,14 +60,6 @@ class UnitOfMeasure : BaseEntity {
 
     fun removeAlias(alias: String?): Boolean {
         return if (aliases == null) false else aliases!!.remove(alias)
-    }
-
-    fun getAliases(): Set<String?> {
-        return if (aliases == null) {
-            Collections.emptySet()
-        } else Collections.unmodifiableSet(
-            aliases
-        )
     }
 
     fun hasConversion(uom: UnitOfMeasure): Boolean {

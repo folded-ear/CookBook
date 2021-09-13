@@ -6,23 +6,20 @@ import javax.validation.constraints.NotNull
 
 @Embeddable
 class Acl {
+
     @ManyToOne
-    private var owner: @NotNull User? = null
+    var owner: @NotNull User? = null
+        set(owner) {
+            field = owner
+            // clear any explicit grant the new owner previously had
+            if (grants == null) return
+            grants!!.remove(owner)
+        }
 
     @ElementCollection
     @MapKeyJoinColumn(name = "user_id")
     @Column(name = "level_id")
-    private var grants: MutableMap<User?, AccessLevel>? = null
-    fun getOwner(): User? {
-        return owner
-    }
-
-    fun setOwner(owner: User?) {
-        this.owner = owner
-        // clear any explicit grant the new owner previously had
-        if (grants == null) return
-        grants!!.remove(owner)
-    }
+    var grants: MutableMap<User?, AccessLevel>? = null
 
     val grantedUsers: Set<User?>
         get() = if (grants == null) {

@@ -124,6 +124,6 @@ class TextractJob : BaseEntity() {
 
     fun isReady() = ready
 
-    @ElementCollection
+    @ElementCollection(targetClass = Line::class)
     var lines: Set<Line>? = null
 }

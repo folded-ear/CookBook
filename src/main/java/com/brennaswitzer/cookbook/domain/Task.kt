@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "_type")
 @DiscriminatorValue("item")
-open class Task : BaseEntity, MutableItem {
+class Task : BaseEntity, MutableItem {
     var name: @NotNull String? = null
     override val raw: String?
         get() = name
@@ -26,21 +26,60 @@ open class Task : BaseEntity, MutableItem {
     var position = 0
 
     @ManyToOne
-    private var parent: Task? = null
+    var parent: Task? = null
+        set(parent) {
+            // see if it's a no-op
+            if (parent?.equals(field) ?: (field == null)) {
+                return
+            }
+            require(!isDescendant(parent)) { "You can't make a task a descendant of one of its own descendants" }
+            // tear down the old one
+            if (field != null && field!!.subtasks != null) {
+                check(field!!.subtasks!!.remove(this)) { "Task #" + id + " wasn't a subtask of its parent #" + field!!.id + "?!" }
+            }
+            // wire up the new one
+            if (parent != null) {
+                if (parent.subtasks == null) {
+                    parent.subtasks = HashSet()
+                }
+                if (parent.subtasks!!.add(this)) {
+                    position = 1 + parent.subtasks!!
+                        .stream()
+                        .map { obj: Task? -> obj!!.position }
+                        .reduce(0) { a: Int, b: Int -> Integer.max(a, b) }
+                }
+            }
+            field = parent
+        }
 
     @OneToMany(mappedBy = "parent", cascade = [CascadeType.ALL])
     @BatchSize(size = 100)
-    private var subtasks: MutableSet<Task?>? = null
+    var subtasks: MutableSet<Task?>? = null
 
     @ManyToOne
-    private var aggregate: Task? = null
+    var aggregate: Task? = null
+        set(agg) {
+            if (agg?.equals(field) ?: (field == null)) {
+                return
+            }
+            require(!isDescendantComponent(agg)) { "You can't make a task a component of one of its own components" }
+            if (field != null && field!!.components != null) {
+                check(field!!.components!!.remove(this)) { "Task #" + id + " wasn't a component of its aggregate #" + field!!.id + "?!" }
+            }
+            if (agg != null) {
+                if (agg.components == null) {
+                    agg.components = HashSet()
+                }
+            }
+            field = agg
+        }
 
     @OneToMany(
         mappedBy = "aggregate",
         cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
     )
     @BatchSize(size = 100)
-    private var components: MutableSet<Task?>? = null
+    var components: MutableSet<Task?>? = null
 
     @ManyToOne(cascade = [CascadeType.MERGE])
     override var ingredient: Ingredient? = null
@@ -102,9 +141,9 @@ open class Task : BaseEntity, MutableItem {
     }
 
     val isSubtask: Boolean
-        get() = getParent() != null
+        get() = this.parent != null
     val isComponent: Boolean
-        get() = getAggregate() != null
+        get() = this.aggregate != null
 
     fun hasSubtasks(): Boolean {
         return subtaskCount != 0
@@ -118,7 +157,7 @@ open class Task : BaseEntity, MutableItem {
         var t = t
         while (t != null) {
             if (t === this) return true
-            t = t.getParent()
+            t = t.parent
         }
         return false
     }
@@ -127,58 +166,17 @@ open class Task : BaseEntity, MutableItem {
         var t = t
         while (t != null) {
             if (t === this) return true
-            t = t.getAggregate()
+            t = t.aggregate
         }
         return false
     }
 
-    open fun setParent(parent: Task?) {
-        // see if it's a no-op
-        if (parent?.equals(getParent()) ?: (getParent() == null)) {
-            return
-        }
-        require(!isDescendant(parent)) { "You can't make a task a descendant of one of its own descendants" }
-        // tear down the old one
-        if (getParent() != null && getParent()!!.subtasks != null) {
-            check(getParent()!!.subtasks!!.remove(this)) { "Task #" + id + " wasn't a subtask of its parent #" + getParent()!!.id + "?!" }
-        }
-        // wire up the new one
-        if (parent != null) {
-            if (parent.subtasks == null) {
-                parent.subtasks = HashSet()
-            }
-            if (parent.subtasks!!.add(this)) {
-                position = 1 + parent.subtasks!!
-                    .stream()
-                    .map { obj: Task? -> obj!!.position }
-                    .reduce(0) { a: Int, b: Int -> Integer.max(a, b) }
-            }
-        }
-        this.parent = parent
-    }
-
-    fun setAggregate(agg: Task?) {
-        if (agg?.equals(getAggregate()) ?: (getAggregate() == null)) {
-            return
-        }
-        require(!isDescendantComponent(agg)) { "You can't make a task a component of one of its own components" }
-        if (getAggregate() != null && getAggregate()!!.components != null) {
-            check(getAggregate()!!.components!!.remove(this)) { "Task #" + id + " wasn't a component of its aggregate #" + getAggregate()!!.id + "?!" }
-        }
-        if (agg != null) {
-            if (agg.components == null) {
-                agg.components = HashSet()
-            }
-        }
-        aggregate = agg
-    }
-
     fun hasParent(): Boolean {
-        return getParent() != null
+        return this.parent != null
     }
 
-    open val taskList: TaskList?
-        get() = getParent()!!.taskList
+    val taskList: TaskList?
+        get() = this.parent!!.taskList
 
     /**
      * Add a new Task to the end of this list.
@@ -186,7 +184,7 @@ open class Task : BaseEntity, MutableItem {
      */
     fun addSubtask(task: Task?) {
         requireNotNull(task) { "You can't add the null subtask" }
-        task.setParent(this)
+        task.parent = this
     }
 
     /**
@@ -195,14 +193,14 @@ open class Task : BaseEntity, MutableItem {
      */
     fun addAggregateComponent(t: Task) {
         addSubtask(t)
-        t.setAggregate(this)
+        t.aggregate = this
     }
 
     fun addSubtaskAfter(task: Task?, after: Task?) {
         requireNotNull(task) { "You can't add the null subtask" }
-        require(!(after != null && !this.equals(after.getParent()))) { "The 'after' task isn't a child of this; that makes no sense." }
-        if (task.getParent() != null) {
-            task.getParent()!!.removeSubtask(task)
+        require(!(after != null && !this.equals(after.parent))) { "The 'after' task isn't a child of this; that makes no sense." }
+        if (task.parent != null) {
+            task.parent!!.removeSubtask(task)
         }
         val position = if (after == null) 0 else after.position + 1
         insertSubtask(position, task)
@@ -217,7 +215,7 @@ open class Task : BaseEntity, MutableItem {
 
     fun removeSubtask(task: Task?) {
         requireNotNull(task) { "You can't remove the null subtask" }
-        task.setParent(null)
+        task.parent = null
     }
 
     val subtaskView: Collection<Task?>
@@ -259,7 +257,7 @@ open class Task : BaseEntity, MutableItem {
         val sb = StringBuilder(name)
         if (isSubtask) {
             sb.append(" [")
-                .append(getParent()!!.name) // NOT .toString()!
+                .append(parent!!.name) // NOT .toString()!
                 .append(']')
         }
         return sb.toString()
@@ -276,7 +274,7 @@ open class Task : BaseEntity, MutableItem {
     }
 
     fun after(after: Task): Task {
-        return of(after.getParent(), after)
+        return of(after.parent, after)
     }
 
     fun hasIngredient(): Boolean {
@@ -289,14 +287,6 @@ open class Task : BaseEntity, MutableItem {
 
     fun hasNotes(): Boolean {
         return notes != null && !notes!!.isEmpty()
-    }
-
-    fun getParent(): Task? {
-        return parent
-    }
-
-    fun getAggregate(): Task? {
-        return aggregate
     }
 
     companion object {

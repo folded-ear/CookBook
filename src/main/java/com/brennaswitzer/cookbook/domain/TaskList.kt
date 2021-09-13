@@ -13,10 +13,17 @@ class TaskList : Task, AccessControlled {
     @OneToMany(
         mappedBy = "plan",
         cascade = [CascadeType.ALL],
-        orphanRemoval = true
+        orphanRemoval = true,
+        targetEntity = PlanBucket::class,
     )
     @BatchSize(size = 100)
-    private var buckets: Set<PlanBucket>? = null
+    var buckets: Set<PlanBucket>? = null
+        get() {
+            if (field == null) {
+                field = HashSet()
+            }
+            return field!!
+        }
 
     constructor() {}
     constructor(name: String?) : super(name) {}
@@ -24,19 +31,13 @@ class TaskList : Task, AccessControlled {
         this.owner = owner
     }
 
-    override fun setParent(parent: Task?) {
-        throw UnsupportedOperationException("TaskLists can't have parents")
-    }
+    override var parent
+        get() = super.parent
+        set(parent) =
+            throw UnsupportedOperationException("TaskLists can't have parents")
 
     override val taskList: TaskList
         get() = this
-
-    fun getBuckets(): Set<PlanBucket> {
-        if (buckets == null) {
-            buckets = HashSet()
-        }
-        return buckets!!
-    }
 
     fun hasBuckets(): Boolean {
         return buckets != null && !buckets!!.isEmpty()

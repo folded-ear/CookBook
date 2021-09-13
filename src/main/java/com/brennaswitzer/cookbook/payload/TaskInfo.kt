@@ -51,13 +51,13 @@ class TaskInfo {
             }
             info.status = task.status
             if (task.isSubtask) {
-                info.parentId = task.getParent()!!.id
+                info.parentId = task.parent!!.id
             }
             if (task.hasSubtasks()) {
                 info.subtaskIds = IdUtils.toIdList(task.orderedSubtasksView)
             }
             if (task.isComponent) {
-                info.aggregateId = task.getAggregate()!!.id
+                info.aggregateId = task.aggregate!!.id
             }
             if (task.hasComponents()) {
                 info.componentIds = IdUtils.toIdList(task.orderedComponentsView)
@@ -88,7 +88,7 @@ class TaskInfo {
             val info = fromTask(plan)
             info.acl = AclInfo.fromAcl(plan.acl)
             if (plan.hasBuckets()) {
-                info.buckets = plan.getBuckets().stream()
+                info.buckets = plan.buckets!!.stream()
                     .map { obj: PlanBucket? -> PlanBucketInfo.from(obj!!) }
                     .collect(Collectors.toList())
             }

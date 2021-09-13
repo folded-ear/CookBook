@@ -5,9 +5,9 @@ import org.springframework.security.access.AccessDeniedException
 interface AccessControlled : Owned {
     val acl: Acl?
     override var owner: User?
-        get() = acl!!.getOwner()
+        get() = acl!!.owner
         set(owner) {
-            acl!!.setOwner(owner)
+            acl!!.owner = owner
         }
 
     fun isPermitted(user: User?, level: AccessLevel?): Boolean {

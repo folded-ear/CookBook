@@ -43,10 +43,7 @@ class Recipe : Ingredient, AggregateIngredient, Owned {
             column = Column(name = "photo_focus_left")
         )
     )
-    private var photo: Photo? = null
-    fun getPhoto(): Photo? {
-        return photo
-    }
+    var photo: Photo? = null
 
     fun getPhoto(create: Boolean): Photo {
         assert(create)
@@ -54,10 +51,6 @@ class Recipe : Ingredient, AggregateIngredient, Owned {
             photo = Photo()
         }
         return photo!!
-    }
-
-    fun setPhoto(photo: Photo?) {
-        this.photo = photo
     }
 
     fun setPhoto(file: S3File?) {

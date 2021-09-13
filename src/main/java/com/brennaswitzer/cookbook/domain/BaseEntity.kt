@@ -22,7 +22,7 @@ abstract class BaseEntity : Identified {
     var updatedAt: @NotNull Instant? = null
 
     @PrePersist
-    protected open fun onPrePersist() {
+    protected fun onPrePersist() {
         val now = Instant.now()
         createdAt = now
     }
