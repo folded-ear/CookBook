@@ -12,7 +12,6 @@ class FileInfo {
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is FileInfo) return false
-        val other = other
         if (!other.canEqual(this as Any)) return false
         val `this$filename`: Any? = filename
         val `other$filename`: Any? = other.filename

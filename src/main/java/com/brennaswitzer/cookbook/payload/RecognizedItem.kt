@@ -116,7 +116,6 @@ class RecognizedItem {
         override fun equals(other: Any?): Boolean {
             if (other === this) return true
             if (other !is Range) return false
-            val other = other
             if (!other.canEqual(this as Any)) return false
             if (start != other.start) return false
             if (end != other.end) return false
@@ -156,7 +155,6 @@ class RecognizedItem {
         override fun equals(other: Any?): Boolean {
             if (other === this) return true
             if (other !is Suggestion) return false
-            val other = other
             if (!other.canEqual(this as Any)) return false
             val `this$name`: Any? = name
             val `other$name`: Any? = other.name

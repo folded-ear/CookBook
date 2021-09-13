@@ -16,7 +16,6 @@ class MutatePlanTree {
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is MutatePlanTree) return false
-        val other = other
         if (!other.canEqual(this as Any)) return false
         val `this$ids`: Any? = ids
         val `other$ids`: Any? = other.ids

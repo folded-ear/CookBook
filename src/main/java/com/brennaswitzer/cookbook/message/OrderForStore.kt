@@ -8,7 +8,6 @@ class OrderForStore {
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is OrderForStore) return false
-        val other = other
         if (!other.canEqual(this as Any)) return false
         val `this$id`: Any? = id
         val `other$id`: Any? = other.id

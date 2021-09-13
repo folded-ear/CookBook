@@ -18,7 +18,6 @@ class CreatePlanBucket {
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is CreatePlanBucket) return false
-        val other = other
         if (!other.canEqual(this as Any)) return false
         val `this$id` = id
         val `other$id` = other.id

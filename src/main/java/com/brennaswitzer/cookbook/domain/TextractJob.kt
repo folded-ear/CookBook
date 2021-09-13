@@ -28,7 +28,6 @@ class TextractJob : BaseEntity() {
         override fun equals(other: Any?): Boolean {
             if (other === this) return true
             if (other !is Line) return false
-            val other = other
             if (!other.canEqual(this as Any)) return false
             val `this$text`: Any? = text
             val `other$text`: Any? = other.text
@@ -76,7 +75,6 @@ class TextractJob : BaseEntity() {
         override fun equals(other: Any?): Boolean {
             if (other === this) return true
             if (other !is Box) return false
-            val other = other
             if (!other.canEqual(this as Any)) return false
             if (java.lang.Double.compare(left, other.left) != 0) return false
             if (java.lang.Double.compare(top, other.top) != 0) return false

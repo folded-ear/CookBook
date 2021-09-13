@@ -10,7 +10,6 @@ class IngredientMessage {
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is IngredientMessage) return false
-        val other = other
         if (!other.canEqual(this as Any)) return false
         val `this$type`: Any? = type
         val `other$type`: Any? = other.type
