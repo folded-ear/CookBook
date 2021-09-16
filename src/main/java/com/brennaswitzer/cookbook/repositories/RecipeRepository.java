@@ -30,7 +30,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, RecipeSea
             "order by recipe.name")
     Iterable<Recipe> findAllByOwnerAndTermContainingIgnoreCase(
             @Param("owner") User owner,
-            @Param("term") String filter
+            @Param("term") String term
     );
 
     @Query("select distinct recipe\n" +
@@ -42,7 +42,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, RecipeSea
             "    or lower(label.name) LIKE %:term%\n" +
             "order by recipe.name")
     Iterable<Recipe> findAllByTermContainingIgnoreCase(
-            @Param("term") String filter
+            @Param("term") String term
     );
 
     List<Recipe> findByOwnerAndNameIgnoreCaseOrderById(User owner, String name);

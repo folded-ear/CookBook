@@ -182,10 +182,10 @@ public class RawIngredientDissection {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Section)) return false;
-            Section section = (Section) o;
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            if (!(other instanceof Section)) return false;
+            Section section = (Section) other;
             return start == section.start &&
                     end == section.end &&
                     text.equals(section.text);
@@ -206,10 +206,10 @@ public class RawIngredientDissection {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RawIngredientDissection)) return false;
-        RawIngredientDissection that = (RawIngredientDissection) o;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof RawIngredientDissection)) return false;
+        RawIngredientDissection that = (RawIngredientDissection) other;
         return raw.equals(that.raw) &&
                 Objects.equals(quantity, that.quantity) &&
                 Objects.equals(units, that.units) &&
