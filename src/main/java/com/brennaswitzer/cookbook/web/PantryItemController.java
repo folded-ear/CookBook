@@ -3,6 +3,7 @@ package com.brennaswitzer.cookbook.web;
 import com.brennaswitzer.cookbook.domain.PantryItem;
 import com.brennaswitzer.cookbook.message.OrderForStore;
 import com.brennaswitzer.cookbook.services.PantryItemService;
+import com.brennaswitzer.cookbook.services.UpdatePantryItemStoreOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ public class PantryItemController {
 
     @Autowired
     private PantryItemService pantryItemService;
+
+    @Autowired
+    private UpdatePantryItemStoreOrder updateStoreOrder;
 
     @GetMapping("/all")
     public Iterable<PantryItem> getAllPantryItems() {
@@ -39,7 +43,7 @@ public class PantryItemController {
         if (id == null || targetId == null || id.equals(targetId)) {
             throw new IllegalArgumentException("Can only order to for two different non-null ingredient IDs");
         }
-        pantryItemService.orderForStore(id, targetId, action.isAfter());
+        updateStoreOrder.invoke(id, targetId, action.isAfter());
     }
 
 }
