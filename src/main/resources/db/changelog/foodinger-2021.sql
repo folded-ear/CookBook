@@ -129,8 +129,8 @@ update ingredient set
     created_at = now()
 where created_at is null;
 
-update ingredient set
-    updated_at = now()
+update ingredient
+set updated_at = now()
 where updated_at is null;
 
 alter table ingredient
@@ -138,3 +138,60 @@ alter table ingredient
     alter created_at set not null,
     alter updated_at set default now(),
     alter updated_at set not null;
+
+--changeset barneyb:inventory
+create table inventory_item
+(
+    id             bigserial        not null,
+    created_at     timestamptz      not null default now(),
+    updated_at     timestamptz      not null default now(),
+    _eqkey         bigint           not null default date_part('epoch'::text, clock_timestamp()),
+    user_id        bigint           not null,
+    pantry_item_id bigint           not null,
+    quantity       double precision not null,
+    units_id       bigint           not null,
+    constraint pk_inventory_item primary key (id),
+    constraint uk_inventory_item_user_pantry_item unique (user_id, pantry_item_id)
+);
+create table inventory_tx_action
+(
+    id   int     not null, -- not serial, as must match code declarations
+    name varchar not null,
+    constraint pk_inventory_tx_action primary key (id),
+    constraint uk_inventory_tx_action_name unique (name)
+);
+insert into inventory_tx_action
+values (1, 'ACQUIRE'),
+       (2, 'CONSUME'),
+       (3, 'DISCARD'),
+       (4, 'RESET');
+create table inventory_tx
+(
+    dtype          integer          not null,
+    id             bigserial        not null,
+    created_at     timestamptz      not null default now(),
+    updated_at     timestamptz      not null default now(),
+    _eqkey         bigint           not null default date_part('epoch'::text, clock_timestamp()),
+    item_id        bigint           not null,
+    quantity       double precision not null,
+    units_id       bigint           not null,
+    new_quantity   double precision not null,
+    new_units_id   bigint           not null,
+    prior_quantity double precision,
+    prior_units_id bigint,
+    constraint pk_inventory_tx primary key (id)
+);
+alter table inventory_item
+    add constraint fk_inventory_item_pantry_item_id foreign key (pantry_item_id) references ingredient;
+alter table inventory_item
+    add constraint fk_inventory_item_units_id foreign key (units_id) references unit_of_measure;
+alter table inventory_item
+    add constraint fk_inventory_item_user_id foreign key (user_id) references users on delete cascade;
+alter table inventory_tx
+    add constraint fk_inventory_tx_dtype foreign key (dtype) references inventory_tx_action;
+alter table inventory_tx
+    add constraint fk_inventory_tx_item_id foreign key (item_id) references inventory_item on delete cascade;
+alter table inventory_tx
+    add constraint fk_inventory_tx_new_units_id foreign key (new_units_id) references unit_of_measure;
+alter table inventory_tx
+    add constraint fk_inventory_tx_units_id foreign key (units_id) references unit_of_measure;
