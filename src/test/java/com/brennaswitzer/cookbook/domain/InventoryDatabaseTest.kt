@@ -5,12 +5,14 @@ import com.brennaswitzer.cookbook.repositories.InventoryTxRepository
 import com.brennaswitzer.cookbook.util.RecipeBox
 import com.brennaswitzer.cookbook.util.UserPrincipalAccess
 import com.brennaswitzer.cookbook.util.WithAliceBobEve
+import com.brennaswitzer.cookbook.util.printResultSet
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.Sort
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
@@ -19,7 +21,7 @@ import javax.persistence.EntityManager
 @SpringBootTest
 @Transactional
 @WithAliceBobEve
-class InventoryTest {
+class InventoryDatabaseTest {
 
     @Autowired
     lateinit var itemRepo: InventoryItemRepository
@@ -33,63 +35,65 @@ class InventoryTest {
     @Autowired
     lateinit var principalAccess: UserPrincipalAccess
 
+    @Autowired
+    lateinit var jdbcTmpl: JdbcTemplate
+
     @Test
     fun doesItSmoke() {
         val box = RecipeBox()
         box.persist(entityManager, principalAccess.user)
 
-        val salt = InventoryItem()
-        salt.user = principalAccess.user
-        salt.pantryItem = box.salt
-        salt.available = Quantity(2.75, box.cup)
-        salt.storeOrder = 123
-        itemRepo.save(salt)
+        val salt = itemRepo.save(
+            InventoryItem(
+                principalAccess.user,
+                box.salt,
+            )
+        )
 
-        assertEquals(1, itemRepo.count())
+        // I _seriously_ bought salt
+        salt.acquire(Quantity(123456, box.cup))
 
-        var tx = InventoryTx()
-        tx.item = salt
-        tx.action = InventoryAction.ACQUIRE
-        tx.quantity = Quantity(123456, box.cup)
-        txRepo.save(tx)
-
-        // bought some more in here, but didn't write it down
+        // bought some more in here too, but didn't write it down
         (4..19).forEach {
-            tx = InventoryTx()
-            tx.item = salt
-            tx.action = InventoryAction.CONSUME
-            tx.quantity = Quantity(it, box.tbsp)
-            txRepo.save(tx)
+            salt.consume(Quantity(it, box.tbsp))
         }
 
         // I just checked; I have 3 cups of salt.
-        tx = InventoryTx()
-        tx.item = salt
-        tx.action = InventoryAction.RESET
-        tx.quantity = Quantity(3, box.cup)
-        txRepo.save(tx)
+        salt.reset(Quantity(3, box.cup))
 
         // used 4 Tbsp (half cup)
-        tx = InventoryTx()
-        tx.item = salt
-        tx.action = InventoryAction.CONSUME
-        tx.quantity = Quantity(4, box.tbsp)
-        txRepo.save(tx)
+        salt.consume(Quantity(4, box.tbsp))
+
+        checkSalt(salt)
+
+        entityManager.flush()
+        entityManager.clear()
+        assertEquals(1, itemRepo.count())
         assertEquals(19, txRepo.count())
 
+        checkSalt(itemRepo.findById(salt.id!!).get())
+
+        jdbcTmpl.query(
+            "select * from inventory_tx order by created_at, id",
+            ::printResultSet
+        )
+    }
+
+    private fun checkSalt(salt: InventoryItem) {
+        assertEquals(19, salt.txCount)
+        assertEquals(19, salt.transactions.size)
         assertEquals(
-            salt.available,
+            salt.quantity,
             txRepo.findByItem(
                 salt,
-                Sort.by(Sort.Order.asc(InventoryTx_.CREATED_AT))
+                Sort.by(
+                    Sort.Order.asc(InventoryTx_.CREATED_AT),
+                    Sort.Order.asc(InventoryTx_.ID)
+                )
             )
-                .fold(Quantity.ZERO) { agg, it ->
-                    when (it.action) {
-                        InventoryAction.ACQUIRE -> agg + it.quantity
-                        InventoryAction.CONSUME,
-                        InventoryAction.DISCARD -> agg - it.quantity
-                        InventoryAction.RESET -> it.quantity
-                    }
+                .fold(Quantity.ZERO) { total, it ->
+                    println(it)
+                    it.computeNewQuantity(total)
                 })
     }
 

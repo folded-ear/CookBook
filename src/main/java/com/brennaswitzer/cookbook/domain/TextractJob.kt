@@ -11,10 +11,8 @@ class TextractJob : BaseEntity() {
         // left is a SQL keyword, so to make querying easier, use x/y columns
         @Embedded
         @AttributeOverrides(
-            AttributeOverride(
-                name = "left",
-                column = Column(name = "x")
-            ), AttributeOverride(name = "top", column = Column(name = "y"))
+            AttributeOverride(name = "left", column = Column(name = "x")),
+            AttributeOverride(name = "top", column = Column(name = "y"))
         )
         var box: Box? = null
 
