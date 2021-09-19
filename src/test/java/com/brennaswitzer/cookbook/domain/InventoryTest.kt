@@ -2,7 +2,6 @@ package com.brennaswitzer.cookbook.domain
 
 import com.brennaswitzer.cookbook.repositories.InventoryItemRepository
 import com.brennaswitzer.cookbook.repositories.InventoryTxRepository
-import com.brennaswitzer.cookbook.repositories.PantryItemRepository
 import com.brennaswitzer.cookbook.util.RecipeBox
 import com.brennaswitzer.cookbook.util.UserPrincipalAccess
 import com.brennaswitzer.cookbook.util.WithAliceBobEve
@@ -11,6 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
@@ -26,9 +26,6 @@ class InventoryTest {
 
     @Autowired
     lateinit var txRepo: InventoryTxRepository
-
-    @Autowired
-    lateinit var pantryItemRepo: PantryItemRepository
 
     @Autowired
     lateinit var entityManager: EntityManager
@@ -82,11 +79,15 @@ class InventoryTest {
 
         assertEquals(
             salt.available,
-            txRepo.findByItemOrderByCreatedAt(salt)
+            txRepo.findByItem(
+                salt,
+                Sort.by(Sort.Order.asc(InventoryTx_.CREATED_AT))
+            )
                 .fold(Quantity.ZERO) { agg, it ->
                     when (it.action) {
                         InventoryAction.ACQUIRE -> agg + it.quantity
-                        InventoryAction.CONSUME, InventoryAction.DISCARD -> agg - it.quantity
+                        InventoryAction.CONSUME,
+                        InventoryAction.DISCARD -> agg - it.quantity
                         InventoryAction.RESET -> it.quantity
                     }
                 })
