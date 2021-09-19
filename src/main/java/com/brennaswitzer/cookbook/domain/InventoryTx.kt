@@ -2,7 +2,7 @@ package com.brennaswitzer.cookbook.domain
 
 import javax.persistence.*
 
-@Entity // @MappedSuperclass can't back a polymorphic @Repository
+@Entity // @MappedSuperclass can't support a polymorphic @Repository
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.INTEGER)
 abstract class InventoryTx : BaseEntity {
@@ -27,11 +27,7 @@ abstract class InventoryTx : BaseEntity {
     }
 
     /**
-     * The quantity before the transaction. [ResetTx] are destructive, so it is
-     * require to track for that type. However, it's useful for hypothetical
-     * "discard report" which wants to show only [DiscardTx] instance, but still
-     * wants to know the total inventory. Without tracking this, the full
-     * transaction would have to be processed.
+     * The quantity after the transaction.
      */
     @Embedded
     @AttributeOverride(
@@ -114,8 +110,34 @@ class ResetTx : InventoryTx {
     constructor(
         item: InventoryItem,
         quantity: Quantity,
-    ) : super(item, quantity)
+    ) : super(item, quantity) {
+        this.priorQuantity = item.quantity
+    }
+
+    /**
+     * The quantity before the transaction. As ` ResetTx` are destructive, it's
+     * impossible to know the prior state without consulting other parts of the
+     * history. This allows for that answer to be obtained directly.
+     */
+    @Embedded
+    @AttributeOverride(
+        name = "quantity",
+        column = Column(name = "prior_quantity")
+    )
+    @AssociationOverride(
+        name = "units",
+        joinColumns = [JoinColumn(name = "prior_units_id")]
+    )
+    lateinit var priorQuantity: Quantity
+
+    val correction
+        get() = newQuantity - priorQuantity
 
     override fun computeNewQuantity(curr: Quantity) =
         quantity
+
+    override fun toString(): String {
+        return "ResetTx(quantity=$quantity, priorQuantity=$priorQuantity, correction=$correction)"
+    }
+
 }

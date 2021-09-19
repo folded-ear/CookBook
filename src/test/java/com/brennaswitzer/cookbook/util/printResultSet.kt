@@ -7,7 +7,7 @@ fun printResultSet(resultSet: ResultSet) {
     val headers = (1..cc).map { resultSet.metaData.getColumnName(it) }
     val rows = mutableListOf(headers)
     while (!resultSet.isAfterLast) {
-        rows.add((1..cc).map { resultSet.getObject(it).toString() })
+        rows.add((1..cc).map { resultSet.getObject(it)?.toString() ?: "" })
         resultSet.next()
     }
     val lengths = (1..cc).map { 0 }.toIntArray()
