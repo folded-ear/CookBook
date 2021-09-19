@@ -16,8 +16,8 @@ class Quantity {
     var units: UnitOfMeasure? = null
 
     constructor() {}
-    constructor(quantity: Double, units: UnitOfMeasure?) {
-        this.quantity = quantity
+    constructor(quantity: Number, units: UnitOfMeasure?) {
+        this.quantity = quantity.toDouble()
         this.units = units
     }
 
@@ -55,10 +55,15 @@ class Quantity {
     }
 
     operator fun plus(that: Quantity): Quantity {
+        if (0.0 == quantity) return that
+        if (0.0 == that.quantity) return this
         return if (units == that.units) {
             Quantity(quantity + that.quantity, units)
         } else plus(that.convertTo(units))
     }
+
+    operator fun minus(that: Quantity) =
+        this + Quantity(-that.quantity, that.units)
 
     operator fun times(factor: Double): Quantity {
         return if (factor == 1.0) this else Quantity(
