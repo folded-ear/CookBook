@@ -32,26 +32,23 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - name: Cache Gradle packages
+      - name: Cache Maven packages
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - name: Build API
-        run: ./gradlew build --console plain --refresh-dependencies --rerun-tasks
+        run: mvn --batch-mode --update-snapshots verify
       - name: Bundle for Beanstalk
         # run this on every branch, even though only master will deploy it
         # files have a .yaml extension for easier editing, but EB needs .config
         run: |
           for f in .ebextensions/*.yaml; do mv $f $f.config; done
-          zip build/eb_bundle.zip -r public_html
-          zip build/eb_bundle.zip -r .ebextensions
-          zip build/eb_bundle.zip -j build/libs/cookbook-*.jar
-          zip build/eb_bundle.zip Procfile
+          zip target/eb_bundle.zip -r public_html
+          zip target/eb_bundle.zip -r .ebextensions
+          zip target/eb_bundle.zip -j target/cookbook-*.jar
+          zip target/eb_bundle.zip Procfile
       - name: Deploy Beanstalk
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: einaregilsson/beanstalk-deploy@v17
@@ -62,6 +59,6 @@ jobs:
           environment_name: Cookbook-env
           version_label: ${{ format('github-{0}-{1}-{2}', github.run_number, env.TIMESTAMP, github.sha) }}
           region: us-west-2
-          deployment_package: build/eb_bundle.zip
+          deployment_package: target/eb_bundle.zip
           wait_for_deployment: false
 
