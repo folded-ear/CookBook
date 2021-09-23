@@ -1,9 +1,5 @@
 grammar Number;
 
-@header {
-    package com.brennaswitzer.cookbook.antlr;
-}
-
 start
     :   a=atom
         (AND b=atom)*
