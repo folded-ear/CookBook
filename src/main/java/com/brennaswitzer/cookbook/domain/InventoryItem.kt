@@ -1,6 +1,5 @@
 package com.brennaswitzer.cookbook.domain
 
-import org.hibernate.annotations.Formula
 import javax.persistence.*
 
 @Entity
@@ -42,7 +41,6 @@ class InventoryItem : BaseEntity {
     /**
      * This is a cache over [transactions].
      */
-    @Formula("(select count(*) from inventory_tx tx where tx.item_id = id)")
     var txCount: Int = 0
 
     fun acquire(quantity: Quantity) {
