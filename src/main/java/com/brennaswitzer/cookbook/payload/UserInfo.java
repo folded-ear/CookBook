@@ -1,9 +1,10 @@
 package com.brennaswitzer.cookbook.payload;
 
-import com.brennaswitzer.cookbook.domain.AuthProvider;
 import com.brennaswitzer.cookbook.domain.User;
 import com.brennaswitzer.cookbook.security.UserPrincipal;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
@@ -13,61 +14,29 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class UserInfo {
 
+    @Getter
+    @Setter
     private Long id;
+
+    @Getter
+    @Setter
     private String name;
+
+    @Getter
+    @Setter
     private String email;
+
+    @Getter
+    @Setter
     private String imageUrl;
-    private AuthProvider provider;
 
+    @Getter
+    @Setter
+    private ProviderType provider;
+
+    @Getter
+    @Setter
     private Collection<String> roles;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public AuthProvider getProvider() {
-        return provider;
-    }
-
-    public void setProvider(AuthProvider provider) {
-        this.provider = provider;
-    }
-
-    public Collection<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<String> roles) {
-        this.roles = roles;
-    }
 
     public static UserInfo fromUser(User user) {
         UserInfo info = new UserInfo();
@@ -75,7 +44,7 @@ public class UserInfo {
         info.setEmail(user.getEmail());
         info.setImageUrl(user.getImageUrl());
         info.setName(user.getName());
-        info.setProvider(user.getProvider());
+        info.setProvider(ProviderType.fromAuthProvider(user.getProvider()));
         return info;
     }
 
