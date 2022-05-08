@@ -19,7 +19,7 @@ spring:
             clientSecret: ${GOOGLE_CLIENT_SECRET}
 app:
   # where 'index.html' lives from the UA's perspective
-  public-url: https://cook.brennaswitzer.com/
+  public-url: https://your-face-is-a-cookbook.barneyb.com/
   aws:
     bucket-name: foodinger
   oauth2:
@@ -28,7 +28,7 @@ app:
     # redirectUri mentioned by the client in the /oauth2/authorize request.
     # We're not using cookies because they won't work well in mobile clients.
     authorizedRedirectUris:
-      - https://cook.brennaswitzer.com/post-oauth2/redirect
+      - https://your-face-is-a-cookbook.barneyb.com/post-oauth2/redirect
 
 logging:
   level:
