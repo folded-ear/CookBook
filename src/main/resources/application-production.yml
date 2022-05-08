@@ -7,7 +7,9 @@ spring:
     hikari:
       data-source-properties:
         socketFactory: com.google.cloud.sql.postgres.SocketFactory
-        cloudSqlInstance: folded-ear:us-west1:face-is-cookbook
+        cloudSqlInstance: ${CLOUD_SQL_INSTANCE}
+        user: ${DB_USER}
+        password: ${DB_PASS}
   jpa:
     show-sql: false
   security:
