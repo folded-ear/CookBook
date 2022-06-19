@@ -1,11 +1,6 @@
-HELP.md
+### Maven
 /target/
 !.mvn/wrapper/maven-wrapper.jar
-/src/main/java/*.tokens
-/src/main/java/com/brennaswitzer/cookbook/antlr/*.*
-/src/main/resources/application-default.yml
-/src/main/resources/application-dev.yml
-/src/main/resources/liquibase.properties
 
 ### STS ###
 .apt_generated
@@ -39,8 +34,16 @@ HELP.md
 ### Vi(m) ###
 *.swp
 
-# Elastic Beanstalk Files
+### Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+### Foodinger-specific
+HELP.md
+/src/main/java/*.tokens
+/src/main/java/com/brennaswitzer/cookbook/antlr/*.*
+/src/main/resources/application-default.yml
+/src/main/resources/application-dev.yml
+/src/main/resources/liquibase.properties
 /public_html/
