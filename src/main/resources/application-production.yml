@@ -12,6 +12,9 @@ spring:
           google:
             clientId: ${GOOGLE_CLIENT_ID}
             clientSecret: ${GOOGLE_CLIENT_SECRET}
+  graphql:
+    graphiql:
+      enabled: false
 app:
   # where 'index.html' lives from the UA's perspective
   public-url: https://cook.brennaswitzer.com/

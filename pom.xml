@@ -16,14 +16,14 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <org.liquibase.version>3.6.3</org.liquibase.version>
         <antlr4.visitor>true</antlr4.visitor>
         <antlr4.listener>true</antlr4.listener>
-        <org.antlr.version>4.7.2</org.antlr.version>
+        <antlr4.version>4.9.3</antlr4.version><!-- this must match graphql-java's dependency's version -->
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <spring-boot.version>2.7.0</spring-boot.version>
         <lombok.version>1.18.18</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+        <jjwt.version>0.9.1</jjwt.version>
     </properties>
 
     <dependencyManagement>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -113,7 +113,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>${org.antlr.version}</version>
+            <version>${antlr4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -137,6 +137,15 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-graphql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.graphql</groupId>
+            <artifactId>spring-graphql-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -152,7 +161,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>${org.antlr.version}</version>
+                <version>${antlr4.version}</version>
                 <executions>
                     <execution>
                         <id>antlr-java</id>
