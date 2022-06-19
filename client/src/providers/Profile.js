@@ -16,35 +16,60 @@ import LoadObject from "../util/LoadObject";
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;
 
-const axios = BaseAxios.create({
-    baseURL: API_BASE_URL,
-});
-
 const ProfileLOContext = createContext(undefined);
 
-export function ProfileProvider({children}) {
-    const [profileLO, setProfileLO] = useState(undefined);
+export function ProfileProvider({ children }) {
+    const [ profileLO, setProfileLO ] = useState(undefined);
     useEffect(() => {
         if (profileLO) {
             if (profileLO.hasValue()) return;
             if (!profileLO.isDone()) return;
             if (profileLO.hasError()) return;
         }
-        axios.get("/api/user/me")
-            .then(data => {
-                GTag("set", {
-                    uid: data.data.id,
-                });
-                setProfileLO(lo =>
-                    lo.setValue(data.data).done());
+        fetch(`${API_BASE_URL}/graphql`, {
+            "credentials": "include",
+            "method": "POST",
+            "mode": "cors",
+            "headers": {
+                "content-type": "application/json",
+            },
+            "body": JSON.stringify({
+                "query": `{
+                  me {
+                    id,
+                    email,
+                    name,
+                    imageUrl,
+                    roles,
+                  }
+                }`,
+            }),
+        })
+            .then(r => r.json())
+            .then(r => {
+                if (r.data) {
+                    // success!
+                    const me = r.data.me;
+                    me.id = parseInt(me.id);
+                    GTag("set", {
+                        uid: me.id,
+                    });
+                    setProfileLO(lo =>
+                        lo.setValue(me).done());
+                } else {
+                    // bummer
+                    let msg = "Unknown Error";
+                    if (r.error) { // transport-ish
+                        msg = r.error;
+                    } else if (r.errors && r.errors[0]) { // GraphQL
+                        msg = r.errors[0].message;
+                    }
+                    throw new Error(msg);
+                }
             })
             .catch(error => {
-                if (error.response && error.response.status === 401) {
-                    setProfileLO(LoadObject.withError(new Error(ProfileState.ERR_NO_TOKEN)));
-                } else {
-                    setProfileLO(lo =>
-                        lo.setError(error).done());
-                }
+                setProfileLO(lo =>
+                    lo.setError(error).done());
             });
         setProfileLO(lo =>
             lo ? lo.loading() : LoadObject.loading());
