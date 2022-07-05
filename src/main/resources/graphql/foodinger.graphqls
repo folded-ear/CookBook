@@ -1,11 +1,67 @@
 type Query {
-    me: Profile!
+    me: UserProfile!
 }
 
-type Profile {
-    id: ID!,
+#
+# We don't have global IDs, so can't expose a node(id:ID) field on Query, but
+# use the type to minimize surface area to update if we do in the future.
+#
+interface Node {
+    id: ID!
+}
+
+type PageInfo {
+    startCursor: ID
+    endCursor: ID
+    hasNextPage: Boolean
+    hasPreviousPage: Boolean
+}
+
+interface Connection {
+    totalCount: Int
+    pageInfo: PageInfo!
+}
+
+interface Edge {
+    cursor: ID!
+    node: Node!
+}
+
+type PlanItem implements Node {
+    id: ID!
+    children(
+        first: Int
+        after: ID
+    ): PlanItemChildrenConnection
+}
+
+type PlanItemChildrenConnection implements Connection {
+    totalCount: Int
+    pageInfo: PageInfo!
+    edges: [PlanItemChildrenEdge]
+}
+
+type PlanItemChildrenEdge implements Edge {
+    cursor: ID!
+    node: PlanItem!
+}
+
+interface Profile {
+    id: ID!
+    name: String!
+    imageUrl: String
+}
+
+type UserProfile implements Node & Profile {
+    id: ID!
     email: String!
     name: String!
     imageUrl: String
     roles: [String!]!
+}
+
+type Friend implements Node & Profile {
+    id: ID!
+    name: String!
+    imageUrl: String
 }
