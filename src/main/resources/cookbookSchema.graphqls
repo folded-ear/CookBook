@@ -1,0 +1,17 @@
+scalar DateTime
+
+type Query {
+    post(id: ID!): Post
+}
+type Mutation {
+    createPost(name:String):Post
+}
+type Post {
+    id: ID!
+    name: String
+    date: DateTime
+}
+
+type PlanItem {
+
+}
