@@ -1,24 +1,22 @@
-type Query {
-    me: UserProfile!
-}
+################################################################################
+# Infrastructure
+################################################################################
 
-#
 # We don't have global IDs, so can't expose a node(id:ID) field on Query, but
 # use the type to minimize surface area to update if we do in the future.
-#
 interface Node {
     id: ID!
 }
 
 type PageInfo {
-    startCursor: ID
-    endCursor: ID
-    hasNextPage: Boolean
-    hasPreviousPage: Boolean
+    startCursor: ID!
+    endCursor: ID!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
 }
 
 interface Connection {
-    totalCount: Int
+    totalCount: Int!
     pageInfo: PageInfo!
 }
 
@@ -27,24 +25,82 @@ interface Edge {
     node: Node!
 }
 
+################################################################################
+# Query
+################################################################################
+
+type Query {
+    me: UserProfile!
+    allPlans(
+        first: Int
+        after: ID
+    ): PlanList!
+}
+
+################################################################################
+# Planner
+################################################################################
+
+type PlanList implements Connection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+    edges: [PlanListEdge!]!
+}
+
+type PlanListEdge implements Edge {
+    cursor: ID!
+    node: Plan!
+}
+
 type PlanItem implements Node {
     id: ID!
     children(
         first: Int
         after: ID
-    ): PlanItemChildrenConnection
+    ): PlanItemChildrenConnection!
 }
 
 type PlanItemChildrenConnection implements Connection {
-    totalCount: Int
+    totalCount: Int!
     pageInfo: PageInfo!
-    edges: [PlanItemChildrenEdge]
+    edges: [PlanItemChildrenEdge!]!
 }
 
 type PlanItemChildrenEdge implements Edge {
     cursor: ID!
     node: PlanItem!
 }
+
+type Plan implements Node {
+    id: ID!
+    children(
+        first: Int
+        after: ID
+    ): PlanItemChildrenConnection!
+    buckets(
+        first: Int
+        after: ID
+    ): PlanBucketsConnection!
+}
+
+type PlanBucketsConnection implements Connection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+    edges: [PlanBucketsEdge]
+}
+
+type PlanBucketsEdge implements Edge {
+    cursor: ID!
+    node: PlanBucket!
+}
+
+type PlanBucket implements Node {
+    id: ID!
+}
+
+################################################################################
+# Users and Friends
+################################################################################
 
 interface Profile {
     id: ID!
