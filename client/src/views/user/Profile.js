@@ -18,6 +18,7 @@ import { useAuthToken } from "../../providers/AuthToken";
 import { useIsDeveloper } from "../../providers/Profile";
 import PageBody from "../common/PageBody";
 import User from "./User";
+import {UserProfileController} from "../../UserProfile/UserProfileController";
 
 const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
@@ -71,6 +72,7 @@ const Profile = ({
     }, [cookThisRef.current]);
 
     return <PageBody>
+        <UserProfileController />
         {user.imageUrl && <img
             src={user.imageUrl}
             alt={user.name}
