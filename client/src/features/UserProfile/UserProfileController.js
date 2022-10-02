@@ -7,9 +7,12 @@ import UserActions from "../../data/UserActions";
 import useWindowSize from "../../data/useWindowSize";
 import useIsDevMode from "../../data/useIsDevMode";
 import Dispatcher from "../../data/LibraryStore";
+import User from "../../views/user/User";
+import {selectCurrentUser} from "./selectors/selectCurrentUser";
 
 export const UserProfileController = () => {
     const { data, loading, error} =  useGetCurrentUser();
+    const {currentUser} = selectCurrentUser(data);
 
     const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
@@ -47,6 +50,6 @@ export const UserProfileController = () => {
             {isDevMode && <DevMode />}
         </React.Fragment>;
     };
-    return <div>hello</div>
+    return <div><User {...currentUser} /></div>
 }
 
