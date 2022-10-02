@@ -8,5 +8,5 @@ export const useGetCurrentUser = () => {
         data,
         loading,
         error,
-    }
-}
+    };
+};

@@ -1,55 +1,44 @@
 import * as React from "react";
 import preval from "preval.macro";
 import Divider from "@material-ui/core/Divider";
-import Switch from "@material-ui/core/Switch";
 import {useGetCurrentUser} from "./hooks/useGetCurrentUser";
-import UserActions from "../../data/UserActions";
 import useWindowSize from "../../data/useWindowSize";
-import useIsDevMode from "../../data/useIsDevMode";
-import Dispatcher from "../../data/LibraryStore";
 import User from "../../views/user/User";
 import {selectCurrentUser} from "./selectors/selectCurrentUser";
+import {useAuthToken} from "../../providers/AuthToken";
+import {useIsDeveloper} from "../../providers/Profile";
+import {Developer} from "./components/Developer";
+import {CookThis} from "./components/CookThis";
+import LoadingIndicator from "../../views/common/LoadingIndicator";
+import {Profile} from "./components/Profile";
 
 export const UserProfileController = () => {
     const { data, loading, error} =  useGetCurrentUser();
+
     const {currentUser} = selectCurrentUser(data);
+    const isDeveloper = useIsDeveloper();
 
-    const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
+    const isLoadingUserProfile = loading || !currentUser
 
-    const DevMode = () => {
-        const windowSize = useWindowSize();
-        return <React.Fragment>
-            <p>
-                Window: {windowSize.width}x{windowSize.height}
-            </p>
-            <p>
-                Build: {dateTimeStamp}
-            </p>
-        </React.Fragment>;
-    };
+    if(isLoadingUserProfile) {
+        return <LoadingIndicator />
+    }
 
-    const Developer = () => {
-        const isDevMode = useIsDevMode();
+    if(error) {
+        return <div>Oops, something went wrong.</div>
+    }
 
-        const handleDevModeChange = (e) => {
-            Dispatcher.dispatch({
-                type: UserActions.SET_DEV_MODE,
-                enabled: e.target.checked,
-            });
-        };
-
-        return <React.Fragment>
+    return (
+        <div>
+            <Profile currentUser={currentUser} />
             <Divider />
-            Dev Mode:
-            {" "}
-            <Switch
-                checked={isDevMode}
-                onChange={handleDevModeChange}
-                color="primary"
-            />
-            {isDevMode && <DevMode />}
-        </React.Fragment>;
-    };
-    return <div><User {...currentUser} /></div>
+            <CookThis />
+            <Divider />
+            <div>
+                <User {...currentUser} />
+            </div>
+            {isDeveloper && <Developer />}
+        </div>
+    );
 }
 

@@ -1,12 +1,11 @@
-import * as React from "react";
 
 export const selectCurrentUser = (data) => {
-    if(!data) {
-        return null
-    }
-    const {getCurrentUser: currentUser} = data;
+    let currentUser;
 
+    if(data) {
+        currentUser = data.getCurrentUser;
+    }
     return {
         currentUser
     };
-}
+};
