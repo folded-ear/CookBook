@@ -13,7 +13,6 @@ import Landing from "./views/Landing";
 import Pantry from "./views/pantry/Pantry";
 import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler";
 import Profile from "./views/user/Profile";
-import {PlantItemsController} from "./features/PlanItems/PlantItemsController";
 
 const routes = {
     public: [
@@ -35,7 +34,6 @@ const routes = {
         {path: "/plan", component: Tasks},
         {path: "/shop", component: Shop},
         {path: "/pantry", component: Pantry},
-        {path: "/hello", component: PlantItemsController},
     ]
 };
 
