@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 
 export const Profile = ({currentUser}) => {
     return (
@@ -14,5 +15,13 @@ export const Profile = ({currentUser}) => {
                 <p className="profile-email">{currentUser.email}</p>
             </div>
         </>
-    )
-}
+    );
+};
+
+Profile.propTypes = {
+    currentUser: PropTypes.shape({
+        imageUrl: PropTypes.string,
+        name: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+    }).isRequired,
+};

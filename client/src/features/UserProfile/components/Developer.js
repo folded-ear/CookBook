@@ -23,10 +23,8 @@ const DevMode = () => {
 
 export const Developer = () => {
     const isDevMode = useIsDevMode();
-    console.log(isDevMode)
 
     const handleDevModeChange = (e) => {
-        console.log(e)
         Dispatcher.dispatch({
             type: UserActions.SET_DEV_MODE,
             enabled: e.target.checked,

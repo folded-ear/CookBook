@@ -1,11 +1,8 @@
 import * as React from "react";
-import preval from "preval.macro";
 import Divider from "@material-ui/core/Divider";
 import {useGetCurrentUser} from "./hooks/useGetCurrentUser";
-import useWindowSize from "../../data/useWindowSize";
 import User from "../../views/user/User";
 import {selectCurrentUser} from "./selectors/selectCurrentUser";
-import {useAuthToken} from "../../providers/AuthToken";
 import {useIsDeveloper} from "../../providers/Profile";
 import {Developer} from "./components/Developer";
 import {CookThis} from "./components/CookThis";
@@ -18,14 +15,14 @@ export const UserProfileController = () => {
     const {currentUser} = selectCurrentUser(data);
     const isDeveloper = useIsDeveloper();
 
-    const isLoadingUserProfile = loading || !currentUser
+    const isLoadingUserProfile = loading || !currentUser;
 
     if(isLoadingUserProfile) {
-        return <LoadingIndicator />
+        return (<LoadingIndicator />);
     }
 
     if(error) {
-        return <div>Oops, something went wrong.</div>
+        return (<div>Oops, something went wrong.</div>);
     }
 
     return (
@@ -40,5 +37,5 @@ export const UserProfileController = () => {
             {isDeveloper && <Developer />}
         </div>
     );
-}
+};
 

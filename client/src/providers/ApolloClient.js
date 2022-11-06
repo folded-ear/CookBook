@@ -4,8 +4,8 @@ import * as React from "react";
 
 
 const link = createHttpLink({
-    uri: 'http://localhost:8080/graphql',
-    credentials: 'include'
+    uri: "http://localhost:8080/graphql",
+    credentials: "include",
 });
 
 const client = new ApolloClientInstance({
@@ -14,10 +14,10 @@ const client = new ApolloClientInstance({
 });
 
 export function ApolloClient({children}) {
-    return <ApolloProvider  client={client}>{children}</ApolloProvider>
+    return <ApolloProvider  client={client}>{children}</ApolloProvider>;
 }
 
 ApolloClient.propTypes = {
     children: PropTypes.node,
-}
+};
 

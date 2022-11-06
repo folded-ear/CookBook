@@ -46,7 +46,6 @@ class PreferencesStore extends ReduceStore {
                 return setPref(state, Prefs.ACTIVE_TASK_LIST, action.id);
             }
             case UserActions.SET_DEV_MODE: {
-                console.log("here?")
                 return setPref(state, Prefs.DEV_MODE, action.enabled);
             }
             default:
