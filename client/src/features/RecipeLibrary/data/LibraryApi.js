@@ -1,8 +1,8 @@
 import BaseAxios from "axios";
 import qs from "qs";
-import { API_BASE_URL } from "../constants";
-import promiseFlux from "../util/promiseFlux";
-import LibraryActions from "./LibraryActions";
+import { API_BASE_URL } from "constants";
+import promiseFlux from "util/promiseFlux";
+import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import queryClient from "./queryClient";
 
 const recipeAxios = BaseAxios.create({
