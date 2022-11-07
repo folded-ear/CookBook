@@ -17,7 +17,7 @@ import { fromMilliseconds } from "util/time";
 import typedStore from "util/typedStore";
 import Dispatcher from "data/dispatcher";
 import LibraryActions from "./LibraryActions";
-import LibraryApi from "./LibraryApi";
+import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
 import PantryItemActions from "data/PantryItemActions";
 import RecipeActions from "data/RecipeActions";
 import RecipeApi from "data/RecipeApi";
