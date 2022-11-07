@@ -1,9 +1,9 @@
 import React from "react";
-import LibraryStore from "data/LibraryStore";
-import { useProfileLO } from "../../providers/Profile";
-import { byNameComparator } from "../../util/comparators";
-import RecipesList from "./components/RecipesList";
-import useFluxStore from "../../data/useFluxStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
+import { useProfileLO } from "providers/Profile";
+import { byNameComparator } from "util/comparators";
+import RecipesList from "features/RecipeLibrary/components/RecipesList";
+import useFluxStore from "data/useFluxStore";
 
 const filterRecipes = (rs, filter) => {
     if (!filter.trim()) return rs.sort(byNameComparator);
