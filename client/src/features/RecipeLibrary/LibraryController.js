@@ -37,7 +37,7 @@ const filterRecipes = (rs, filter) => {
         .map(([r]) => r);
 };
 
-const Library = () => {
+export const LibraryController = () => {
     const me = useProfileLO().getValueEnforcing();
     const libProps = useFluxStore(
         () => {
@@ -58,5 +58,3 @@ const Library = () => {
         {...libProps}
     />;
 };
-
-export default Library;
