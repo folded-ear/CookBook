@@ -3,13 +3,16 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import React from "react";
 import useIsNewVersionAvailable from "data/useIsNewVersionAvailable";
 import { useIsAuthenticated } from "providers/Profile";
-import routes from "../routes";
-import RoutingSwitch from "../RoutingSwitch";
 import theme from "../theme";
-import SnackPack from "../views/common/SnackPack";
 import NewVersionAvailable from "../views/NewVersionAvailable";
 import DesktopHeader from "./DesktopHeader";
-import WeAreMoving from "views/WeAreMoving";
+import {
+    Box,
+    Container,
+    Paper,
+    Typography,
+} from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 function DesktopApp() {
     const newVersionAvailable = useIsNewVersionAvailable();
@@ -17,17 +20,33 @@ function DesktopApp() {
 
     return <ThemeProvider theme={theme}>
         <CssBaseline />
-        {authenticated && (newVersionAvailable
-            ? <NewVersionAvailable />
-            : <WeAreMoving />)}
+        {authenticated && newVersionAvailable && <NewVersionAvailable />}
         <DesktopHeader
             authenticated={authenticated}
         />
-        <RoutingSwitch
-            routes={routes}
-            authenticated={authenticated}
-        />
-        <SnackPack />
+        <Container maxWidth={"sm"}>
+            <Box m={2}>
+                <Paper>
+                    <Box p={2}>
+                        <Typography variant={"h3"} component={"h1"}>
+                            Brenna&apos;s Food Software
+                        </Typography>
+                        <Typography variant={"body1"}>
+                            <p>
+                                Foodinger is now <Link
+                                to="https://gobrennas.com">Brenna&apos;s Food
+                                Software</Link>. Your recipes and plans are
+                                already waiting for you.
+                            </p>
+                            <p>
+                                Update your bookmark, and that&apos;s it.
+                            </p>
+                            <p>Happy cooking!</p>
+                        </Typography>
+                    </Box>
+                </Paper>
+            </Box>
+        </Container>
     </ThemeProvider>;
 }
 

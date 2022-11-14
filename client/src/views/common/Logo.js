@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
             fontWeight: "bold",
             margin: ({small}) =>
                 theme.spacing(small ? 1 : 3),
-            marginRight: ({small}) =>
+            marginRight: ({ small }) =>
                 theme.spacing(small ? 2 : 6),
             fontFamily: "Stint Ultra Condensed",
             whiteSpace: "nowrap",
@@ -18,6 +18,10 @@ const useStyles = makeStyles(theme => ({
         F: {
             transform: "scaleX(-1)",
             display: "inline-block",
+        },
+        foodinger: {
+            textDecoration: "line-through #600",
+            color: "#fa7d7d",
         },
     })
 );
@@ -33,12 +37,14 @@ const Logo = (props) => {
         small,
     });
     return React.createElement(component, {
-        ...ptps,
-        className: classes.root,
-    }, [
-        <span key="F" className={classes.F}>F</span>,
-        small ? "F" : "Foodinger",
-    ]);
+            ...ptps,
+            className: classes.root,
+        },
+        <span className={classes.foodinger}>
+            <span key="F" className={classes.F}>F</span>
+            Foodinger
+        </span>,
+    );
 };
 
 Logo.propTypes = {
