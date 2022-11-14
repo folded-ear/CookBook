@@ -11,7 +11,6 @@ import {
     Paper,
     Typography,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
 
 function MobileApp() {
     const newVersionAvailable = useIsNewVersionAvailable();
@@ -31,14 +30,14 @@ function MobileApp() {
                         </Typography>
                         <Typography variant={"body1"}>
                             <p>
-                                Foodinger is now <Link
-                                to="https://gobrennas.com">Brenna&apos;s Food
-                                Software</Link>. Your recipes and plans are
+                                Foodinger is now <a
+                                href="https://gobrennas.com">Brenna&apos;s Food
+                                Software</a>. Your recipes and plans are
                                 already waiting for you.
                             </p>
                             <p>
-                                Open <Link
-                                to="https://gobrennas.com">gobrennas.com</Link> in
+                                Open <a
+                                href="https://gobrennas.com">gobrennas.com</a> in
                                 your mobile browser, install the new app, and
                                 delete this one. That&apos;s it.
                             </p>

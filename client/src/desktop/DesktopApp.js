@@ -11,7 +11,6 @@ import {
     Paper,
     Typography,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
 
 function DesktopApp() {
     const newVersionAvailable = useIsNewVersionAvailable();
@@ -31,9 +30,9 @@ function DesktopApp() {
                         </Typography>
                         <Typography variant={"body1"}>
                             <p>
-                                Foodinger is now <Link
-                                to="https://gobrennas.com">Brenna&apos;s Food
-                                Software</Link>. Your recipes and plans are
+                                Foodinger is now <a
+                                href="https://gobrennas.com">Brenna&apos;s Food
+                                Software</a>. Your recipes and plans are
                                 already waiting for you.
                             </p>
                             <p>
