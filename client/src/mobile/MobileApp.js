@@ -2,7 +2,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import React from "react";
 import useIsNewVersionAvailable from "data/useIsNewVersionAvailable";
-import { useIsAuthenticated } from "providers/Profile";
 import theme from "../theme";
 import NewVersionAvailable from "../views/NewVersionAvailable";
 import MobileHeader from "./MobileHeader";
@@ -16,13 +15,12 @@ import { Link } from "react-router-dom";
 
 function MobileApp() {
     const newVersionAvailable = useIsNewVersionAvailable();
-    const authenticated = useIsAuthenticated();
 
     return <ThemeProvider theme={theme}>
         <CssBaseline />
-        {authenticated && newVersionAvailable && <NewVersionAvailable />}
+        {newVersionAvailable && <NewVersionAvailable />}
         <MobileHeader
-            authenticated={authenticated}
+            authenticated={false}
         />
         <Container>
             <Box my={2} mx={1}>
