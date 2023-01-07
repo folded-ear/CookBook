@@ -1,5 +1,9 @@
 # Foodinger!
 
+> Foodinger has become Brenna's Food Software. It also got split into separate [client](https://github.com/folded-ear/gobrennas-client) and [api](https://github.com/folded-ear/gobrennas-api) projects, instead of all-in-one.
+
+---
+
 [![CI/CD](https://github.com/folded-ear/foodinger/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/folded-ear/foodinger/actions/workflows/ci-cd.yaml)
 
 I'm a cookbook! I'm a todo list! I'm a meal planning package! I'm awesome!
